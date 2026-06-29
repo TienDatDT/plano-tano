@@ -19,7 +19,6 @@ const priceFmt = new Intl.NumberFormat(undefined, {
 });
 
 export function ProductList() {
-  const { t, locale } = useTranslation();
 
   const [products, setProducts] = useState<ApiProduct[]>([]);
   const [loading, setLoading] = useState(true);

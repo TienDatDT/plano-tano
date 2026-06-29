@@ -2,7 +2,7 @@
 
 import { AlertTriangle } from "lucide-react";
 import { Drawer } from "@/shared/components/ui/Drawer";
-import { useTranslation } from "@/shared/lib/i18n/client";
+import { useTranslation } from "react-i18next";
 
 interface ProductFormDrawerProps {
   isOpen: boolean;
@@ -33,7 +33,7 @@ export function ProductFormDrawer({
   saving,
   onSubmit,
 }: ProductFormDrawerProps) {
-    const {i18n} = useTranslation();
+    const {t} = useTranslation();
   return (
     <Drawer isOpen={isOpen} onClose={onClose} title={title} description={description}>
       <form onSubmit={onSubmit} className="flex flex-col gap-6">
