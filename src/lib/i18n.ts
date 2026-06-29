@@ -16,7 +16,9 @@ i18n
         translation: vi,
       },
     },
-    lng: localStorage.getItem("language") || "en",
+    lng: typeof window !== "undefined"
+  ? localStorage.getItem("language") || "en"
+  : "en",
     fallbackLng: "en",
     interpolation: {
       escapeValue: false,

@@ -28,6 +28,7 @@ export function SupplierManagement() {
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
+  const activeFiltersCount = (search ? 1 : 0) + (status !== "all" ? 1 : 0);
   // --- Drawer State ---
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierRow | null>(null);
@@ -207,8 +208,11 @@ export function SupplierManagement() {
         {/* Advanced Filters Area */}
         <section className="rounded-2xl border border-premium-border bg-white px-5 py-4 shadow-sm">
           <SupplierFilterBar
+            search={search}
+            onSearchChange={handleSearchChange}
             status={status}
             onStatusChange={handleStatusChange}
+            activeFiltersCount={activeFiltersCount}
             onReset={handleResetFilters}
           />
         </section>

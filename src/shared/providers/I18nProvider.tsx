@@ -11,7 +11,9 @@ export default function I18nProvider({
 }) {
   useEffect(() => {
     const lang = localStorage.getItem("language") || "en";
-    i18n.changeLanguage(lang);
+    if (i18n.language !== lang) {
+      i18n.changeLanguage(lang);
+    }
   }, []);
 
   return <>{children}</>;

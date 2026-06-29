@@ -3,20 +3,15 @@ import { CreateUnitConversionDTO, UpdateUnitConversionDTO } from "../dtos/unitco
 
 export class UnitConversionRepository {
     async create(data: CreateUnitConversionDTO) {
-        return await prisma.unitConversion.create({
-            data: {
-                ratio: data.ratio,
-                fromUnitId: data.fromUnitId,
-                toUnitId: data.toUnitId,
-                product: {
-                    connect: {
-                        id: data.productId,
-                    },
-                },
-            },
-        });
-    }
-
+    return await prisma.unitConversion.create({
+        data: {
+            ratio: data.ratio,
+            productId: data.productId,
+            fromUnitId: data.fromUnitId,
+            toUnitId: data.toUnitId,
+        },
+    });
+}
     async findAll() {
         return await prisma.unitConversion.findMany({
             include: {
@@ -39,19 +34,16 @@ export class UnitConversionRepository {
     }
 
     async update(id: string, data: UpdateUnitConversionDTO) {
-        const { productId, ...rest } = data;
-        return await prisma.unitConversion.update({
-            where: { id },
-            data: {
-                ...rest,
-                ...(productId && {
-                    product: {
-                        connect: { id: productId }
-                    }
-                })
-            },
-        });
-    }
+    return await prisma.unitConversion.update({
+        where: { id },
+        data: {
+            ratio: data.ratio,
+            productId: data.productId,
+            fromUnitId: data.fromUnitId,
+            toUnitId: data.toUnitId,
+        },
+    });
+}
 
     async delete(id: string) {
         return await prisma.unitConversion.delete({

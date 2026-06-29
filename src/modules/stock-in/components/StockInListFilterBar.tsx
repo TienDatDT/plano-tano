@@ -36,7 +36,7 @@ export function StockInListFilterBar({
         />
 
         <FilterPanel onReset={onReset} activeCount={activeCount}>
-          <FilterGroup label={"Status"} icon={<Tag className="h-3.5 w-3.5" />}>
+          <FilterGroup label={"Status"}>
             {["all", "Draft", "Completed", "Cancelled"].map((status) => (
               <FilterOption
                 key={status}
@@ -47,7 +47,7 @@ export function StockInListFilterBar({
             ))}
           </FilterGroup>
 
-          <FilterGroup label={"Supplier"} icon={<User className="h-3.5 w-3.5" />}>
+          <FilterGroup label={"Supplier"}>
             {["all", "Midori Paperworks", "Graphite & Grove", "Hue & Tone"].map((sup) => (
               <FilterOption
                 key={sup}
@@ -58,7 +58,7 @@ export function StockInListFilterBar({
             ))}
           </FilterGroup>
 
-          <FilterGroup label={"Time Range"} icon={<Calendar className="h-3.5 w-3.5" />}>
+          <FilterGroup label={"Time Range"}>
             <FilterOption
               active={false}
               onClick={() => {}}

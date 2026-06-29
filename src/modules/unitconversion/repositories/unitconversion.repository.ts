@@ -24,30 +24,27 @@ export class UnitConversionRepository {
     }
 
     async findById(id: string) {
-        return await prisma.unitConversion.findUnique({
-            where: { id },
-            include: {
-                product: true,
-                fromUnit: true,
-                toUnit: true
-            }
-        });
-    }
+    return await prisma.unitConversion.findUnique({
+        where: { id },
+        include: {
+            product: true,
+            fromUnit: true,
+            toUnit: true,
+        },
+    });
+}
 
-    async update(id: string, data: UpdateUnitConversionDTO) {
-        const { productId, ...rest } = data;
-        return await prisma.unitConversion.update({
-            where: { id },
-            data: {
-                ...rest,
-                ...(productId && {
-                    product: {
-                        connect: { id: productId }
-                    }
-                })
-            },
-        });
-    }
+async update(id: string, data: UpdateUnitConversionDTO) {
+    return await prisma.unitConversion.update({
+        where: { id },
+        data: {
+            ratio: data.ratio,
+            productId: data.productId,
+            fromUnitId: data.fromUnitId,
+            toUnitId: data.toUnitId,
+        },
+    });
+}
 
     async delete(id: string) {
         return await prisma.unitConversion.delete({
