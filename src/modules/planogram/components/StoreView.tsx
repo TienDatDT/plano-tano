@@ -296,7 +296,7 @@ export function StoreView() {
 
   // Canvas interaction handlers
   const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
-    if ((e.target as HTMLElement).closes".shelf-item") return;
+    if ((e.target as HTMLElement).closest(".shelf-item")) return;
     
     if ('touches' in e) {
       if (e.touches.length === 1) {

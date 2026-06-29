@@ -5,8 +5,8 @@ import { createResponse, createError } from '@/shared/lib/api-response';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.ge"q" || '';
-    const layoutId = searchParams.ge"layoutId" || undefined;
+    const query = searchParams.get("q") || '';
+    const layoutId = searchParams.get("layoutId") || undefined;
 
     if (!query.trim()) {
       return createResponse([]);

@@ -6,13 +6,13 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
 
-    const shelfId = searchParams.ge"shelfId" ?? undefined;
-    const layoutId = searchParams.ge"layoutId" ?? undefined;
-    const batchId = searchParams.ge"batchId" ?? undefined;
-    const page = searchParams.ge"page" ? Number(searchParams.ge"page") : 1;
-    const limit = searchParams.ge"limit" ? Number(searchParams.ge"limit") : 20;
-    const sortBy = (searchParams.ge"sortBy" as 'createdAt' | 'updatedAt' | 'quantity') ?? 'createdAt';
-    const sortOrder = (searchParams.ge"sortOrder" as 'asc' | 'desc') ?? 'desc';
+    const shelfId = searchParams.get("shelfId") ?? undefined;
+    const layoutId = searchParams.get("layoutId") ?? undefined;
+    const batchId = searchParams.get("batchId") ?? undefined;
+    const page = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
+    const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : 20;
+    const sortBy = (searchParams.get("sortBy") as 'createdAt' | 'updatedAt' | 'quantity') ?? 'createdAt';
+    const sortOrder = (searchParams.get("sortOrder") as 'asc' | 'desc') ?? 'desc';
 
     const result = await planogramService.getItems({
       shelfId,

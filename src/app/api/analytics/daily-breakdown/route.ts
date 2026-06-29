@@ -5,8 +5,8 @@ import { createResponse, createError } from '@/shared/lib/api-response';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const startDate = searchParams.ge"startDate" || undefined;
-    const endDate = searchParams.ge"endDate" || undefined;
+    const startDate = searchParams.get("startDate") || undefined;
+    const endDate = searchParams.get("endDate") || undefined;
 
     const data = await analyticsService.getDailyBreakdown(startDate, endDate);
     return createResponse(data);
