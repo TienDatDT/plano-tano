@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const data = await stockService.getStockSummary();
     return createResponse(data);
-  } catch (error) {
-    return createError(error);
+  } catch (error: any) {
+    return createError(error.message, 500);
   }
 }
