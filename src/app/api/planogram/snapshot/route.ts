@@ -8,7 +8,7 @@ import { createResponse, createError } from '@/shared/lib/api-response';
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const layoutId = searchParams.ge"layoutId";
+    const layoutId = searchParams.get("layoutId");
 
     if (!layoutId) {
       return createError('layoutId query param is required', 400);
