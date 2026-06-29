@@ -16,15 +16,15 @@ export class AnalyticsService {
    */
   private getPeriodBoundaries(startDateStr?: string, endDateStr?: string) {
     const now = new Date();
-    
+
     // Default to last 7 days if not provided
     const end = endDateStr ? endOfDay(new Date(endDateStr)) : endOfDay(now);
-    const start = startDateStr 
-      ? startOfDay(new Date(startDateStr)) 
+    const start = startDateStr
+      ? startOfDay(new Date(startDateStr))
       : startOfDay(new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000)); // Last 7 days inclusive
 
     const durationMs = differenceInMilliseconds(end, start);
-    
+
     const prevEnd = new Date(start.getTime() - 1);
     const prevStart = new Date(start.getTime() - durationMs - 1);
 
@@ -105,8 +105,8 @@ export class AnalyticsService {
       }
     }
 
-    const healthScore = inventoryStats.length > 0 
-      ? Math.round((healthyStockCount / inventoryStats.length) * 100) 
+    const healthScore = inventoryStats.length > 0
+      ? Math.round((healthyStockCount / inventoryStats.length) * 100)
       : 100;
 
     // 4. Compute Average Order Value (AOV) & Growth
@@ -122,8 +122,8 @@ export class AnalyticsService {
         cogs += itemCost;
       }
     }
-    const inventoryTurnover = totalInventoryValueCost > 0 
-      ? Number((cogs / totalInventoryValueCost).toFixed(2)) 
+    const inventoryTurnover = totalInventoryValueCost > 0
+      ? Number((cogs / totalInventoryValueCost).toFixed(2))
       : 0.0;
 
     // 6. Aggregate Best Selling Product Variant in the period
@@ -132,17 +132,17 @@ export class AnalyticsService {
       for (const item of order.items) {
         const variantId = item.variantId;
         const productName = item.variant?.product?.name || 'Unknown';
-        const unitSymbol = item.variant?.unit?.symbol || '';
-        const displayName = `${productName}${unitSymbol ? ` (${unitSymbol})` : ''}`;
-        
+        // const unitSymbol = item.variant?.unit?.symbol || '';
+        const displayName = productName;
+
         const existing = soldQtyMap.get(variantId);
         if (existing) {
           existing.quantity += item.quantity;
         } else {
-          soldQtyMap.set(variantId, { 
-            name: displayName, 
-            sku: item.variant?.sku || 'SKU', 
-            quantity: item.quantity 
+          soldQtyMap.set(variantId, {
+            name: displayName,
+            sku: item.variant?.sku || 'SKU',
+            quantity: item.quantity
           });
         }
       }
@@ -194,7 +194,7 @@ export class AnalyticsService {
       if (dayData) {
         dayData.orders += 1;
         dayData.revenue += Number(order.totalAmount);
-        
+
         for (const item of order.items) {
           const itemRevenue = Number(item.salePrice) * item.quantity;
           const itemCost = Number(item.batch?.importPrice || item.variant?.costPrice || Number(item.salePrice) * 0.6) * item.quantity;
@@ -208,7 +208,7 @@ export class AnalyticsService {
       const revenue = Number(day.revenue.toFixed(2));
       const profit = Number(day.profit.toFixed(2));
       const aov = day.orders > 0 ? Number((revenue / day.orders).toFixed(2)) : 0;
-      
+
       return {
         ...day,
         revenue,
@@ -223,7 +223,7 @@ export class AnalyticsService {
       const categoryName = variant.product?.category?.name || 'Uncategorized';
       const totalQty = variant.batches.reduce((sum, b) => sum + b.quantity, 0);
       const isHealthy = totalQty >= 10;
-      
+
       const existing = categoryHealthMap.get(categoryName) || { healthy: 0, total: 0 };
       existing.total += 1;
       if (isHealthy) existing.healthy += 1;
