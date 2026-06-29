@@ -150,9 +150,15 @@ export class EmergencyInvoiceService {
 function serializeInvoice(invoice: EmergencyInvoiceWithItems) {
   return {
     ...invoice,
+    invoiceDate: invoice.invoiceDate.toISOString(),
+    createdAt: invoice.createdAt.toISOString(),
+    updatedAt: invoice.updatedAt.toISOString(),
+
     totalAmount: Number(invoice.totalAmount),
+
     items: invoice.items.map((item) => ({
       ...item,
+      createdAt: item.createdAt.toISOString(),
       unitPrice: Number(item.unitPrice),
       totalPrice: Number(item.totalPrice),
     })),
