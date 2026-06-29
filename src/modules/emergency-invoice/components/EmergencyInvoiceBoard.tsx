@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Loader2, StickyNote, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { useReactToPrint } from 'react-to-print';
@@ -31,6 +31,8 @@ export function EmergencyInvoiceBoard() {
     monthRevenue: 0,
     averageInvoiceValue: 0,
     largestInvoiceValue: 0,
+    filteredRevenue: 0,
+    filteredCount: 0,
     topProducts: [],
   });
   const [pagination, setPagination] = useState({
@@ -58,16 +60,24 @@ export function EmergencyInvoiceBoard() {
 
   // ── Print state ──────────────────────────────────
   const [printInvoice, setPrintInvoice] = useState<EmergencyInvoice | null>(null);
-  const printRef = useCallback((node: HTMLDivElement | null) => {
-    // Không cần set state DOM node trực tiếp, react-to-print handle qua ref được gắn vào component
-  }, []);
-  
-  // Create a separate ref for react-to-print hook
-  // Bỏ qua lỗi TypeScript cảnh báo ref type mismatch vì react-to-print version có thể type strict
-  const componentRef = useCallback((node: HTMLDivElement) => {
-    // Callback ref
-  }, []);
-  
+  const printContentRef = useRef<HTMLDivElement | null>(null);
+
+  const handlePrintAction = useReactToPrint({
+    contentRef: printContentRef,
+    documentTitle: `Hoa_Don_${printInvoice?.invoiceCode || ''}`,
+    onAfterPrint: () => setPrintInvoice(null),
+  });
+
+  const handlePrint = (invoice: EmergencyInvoice) => {
+    setPrintInvoice(invoice);
+  };
+
+  // Chờ template mount xong với invoice mới rồi mới in
+  useEffect(() => {
+    if (printInvoice && printContentRef.current) {
+      handlePrintAction();
+    }
+  }, [printInvoice]); // eslint-disable-line react-hooks/exhaustive-deps
   // Dùng state lưu ref element để in
   const [printElement, setPrintElement] = useState<HTMLDivElement | null>(null);
 
@@ -157,21 +167,15 @@ export function EmergencyInvoiceBoard() {
     setIsEditOpen(true);
   };
 
-  const handlePrintAction = useReactToPrint({
-    contentRef: { current: printElement },
-    documentTitle: `Hoa_Don_${printInvoice?.invoiceCode || ''}`,
-    onAfterPrint: () => setPrintInvoice(null),
-  });
-
-  const handlePrint = (invoice: EmergencyInvoice) => {
-    setPrintInvoice(invoice);
-    // Cần đợi render xong template
-    setTimeout(() => {
-      if (printElement) {
+  useEffect(() => {
+    if (printInvoice && printContentRef.current) {
+      // Dùng setTimeout để đảm bảo template đã render xong
+      const timer = setTimeout(() => {
         handlePrintAction();
-      }
-    }, 100);
-  };
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [printInvoice]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleResetFilters = () => {
     setPeriod('today');
@@ -306,7 +310,7 @@ export function EmergencyInvoiceBoard() {
       <CreateInvoiceModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        onSuccess={() => {}}
+        onSuccess={() => { }}
         onSubmit={handleCreate}
       />
 
@@ -315,7 +319,7 @@ export function EmergencyInvoiceBoard() {
         invoice={selectedInvoice}
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        onSuccess={() => {}}
+        onSuccess={() => { }}
         onSubmit={handleEditSubmit}
       />
 
@@ -328,9 +332,9 @@ export function EmergencyInvoiceBoard() {
       />
 
       {/* Hidden Print Template */}
-      <div className="hidden print:block h-0 overflow-hidden">
+      <div className="hidden print:block">
         {printInvoice && (
-          <InvoicePrintTemplate ref={setPrintElement} invoice={printInvoice} />
+          <InvoicePrintTemplate ref={printContentRef} invoice={printInvoice} />
         )}
       </div>
     </div>
