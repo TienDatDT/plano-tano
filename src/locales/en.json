@@ -1,0 +1,172 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "products": "Products & Variants",
+    "stockIn": "Stock In",
+    "stock": "Stock",
+    "suppliers": "Suppliers",
+    "categories": "Categories",
+    "orders": "Orders",
+    "emergencyInvoice": "Emergency Invoice",
+    "dailyReport": "Daily Report",
+    "units": "Units & Conversions",
+    "storeLayout": "Store Layout",
+    "planogram": "Planogram",
+    "shelves": "Shelves",
+    "pos": "POS",
+    "settings": "Settings",
+    "management": "Management"
+  },
+  "executiveOverview": {
+    "title1": "Executive",
+    "title2": "Overview",
+    "subtitle": "Manage your stationery empire with precision and style."
+  },
+  "dashboard": {
+    "sevenDays": "7D",
+    "thirtyDays": "30D",
+    "month": "Month",
+    "vitalStatistics": "Vital Statistics",
+    "dateRange": "Date Range",
+    "today": "Today",
+
+    "salesRevenuePerformance": "Sales & Revenue Performance",
+    "operationsRetailIntelligence": "Operations & Retail Intelligence",
+    "inventoryAssetStockHealth": "Inventory Asset & Stock Health",
+
+    "performanceInsights": "Performance Insights",
+    "rapidOperations": "Rapid Operations",
+
+    "ordersOverTime": "Orders over time",
+    "ordersOverTimeDescription": "Monitor orders volume & cash flow revenue",
+
+    "stockTrend": "Stock Trend",
+    "stockTrendDescription": "Inventory health ratio inside store departments",
+
+    "inventoryTurnoverUnit": "x",
+
+    "na": "N/A",
+
+    "healthy": "Healthy",
+    "warning": "Warning",
+    "critical": "Critical",
+
+    "healthyThreshold": "Healthy (≥ 80%)",
+    "warningThreshold": "Warning (65% - 80%)",
+    "criticalThreshold": "Critical (< 65%)"
+  },
+   "common": {
+    "noProducts": "No Products",
+
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+
+    "today": "Today",
+
+    "loading": "Loading...",
+    "empty": "No Data",
+
+    "yes": "Yes",
+    "no": "No",
+
+    "all": "All",
+
+    "unknown": "Unknown",
+
+    "notAvailable": "N/A"
+  },
+  "salesRevenue": {
+    "title": "Sales & Revenue Performance",
+    "retailInventoryValue": "Retail Inventory Value",
+    "retailInventoryValueDescription": "Valuation at current sale prices",
+    "averageOrderValue": "Average Order Value",
+    "averageOrderValueDescription": "Mean checkout value in period",
+    "completedOperations": "Completed Operations",
+    "completedOperationsDescription": "Completed cash & sales receipts"
+  },
+  "operations": {
+    "title": "Operations & Retail Intelligence",
+    "inventoryTurnover": "Inventory Turnover",
+    "inventoryTurnoverDescription": "Rate of inventory sales and replenishment",
+    "bestSellingProduct": "Best Selling Product",
+    "topCategory": "Top Category",
+    "noProducts": "No Products"
+  },
+  "inventory": {
+    "title": "Inventory Asset & Stock Health",
+    "inventoryHealthScore": "Inventory Health Score",
+    "inventoryHealthScoreDescription": "Proportion of healthy stock units",
+    "totalSkuVariants": "Total SKU Variants",
+    "totalSkuVariantsDescription": "Active product variants in store",
+    "lowStockProducts": "Low Stock Products",
+    "lowStockProductsDescription": "Active SKU levels below safety limit",
+    "outOfStockProducts": "Out of Stock Products",
+    "outOfStockProductsDescription": "SKUs with zero batch quantities",
+    "assetCostValue": "Asset Cost Value",
+    "assetCostValueDescription": "Valuation at batch import costs",
+    "pendingBacklog": "Pending Backlog",
+    "pendingBacklogDescription": "Backoffice orders awaiting processing"
+  },
+  "insights": {
+    "title": "Performance Insights",
+    "ordersOverTime": "Orders over time",
+    "ordersOverTimeDescription": "Monitor orders volume & cash flow revenue",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly"
+  },
+  "stockTrend": {
+    "title": "Stock Trend",
+    "description": "Inventory health ratio inside store departments",
+    "stationery": "Stationery",
+    "healthy": "Healthy (≥80%)",
+    "warning": "Warning (65% - 80%)",
+    "critical": "Critical (<65%)"
+  },
+  "quickActions": {
+    "title": "Rapid Operations",
+    "addProduct": "Add Product",
+    "addProductDescription": "Register new stationery items",
+    "stockIn": "Stock In",
+    "stockInDescription": "Receive goods from suppliers",
+    "createOrder": "Create Order",
+    "createOrderDescription": "Start a new checkout session"
+  },
+  "products": {
+    "title": "Products",
+    "subtitle": "Manage your products and performance overview",
+
+    "totalProducts": "Total Products",
+    "totalStock": "Total Stock",
+
+    "searchPlaceholder": "Search products...",
+
+    "addProduct": "Add Product",
+    "filter": "Filter",
+
+    "table": {
+      "productName": "Product Name",
+      "category": "Category",
+      "totalSku": "Total SKU",
+      "totalStock": "Total Stock",
+      "status": "Status",
+      "actions": "Actions"
+    },
+
+    "manageSkus": "Manage SKUs",
+
+    "empty": {
+      "title": "No Products",
+      "description": "Add your first product to get started."
+    }
+  },
+
+  "productStatus": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "draft": "Draft",
+    "archived": "Archived"
+  }
+
+}

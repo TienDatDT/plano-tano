@@ -1,0 +1,172 @@
+
+{
+  "nav": {
+    "dashboard": "Tổng quan",
+    "products": "Sản phẩm & Biến thể",
+    "stockIn": "Nhập kho",
+    "stock": "Tồn kho",
+    "suppliers": "Nhà cung cấp",
+    "categories": "Danh mục",
+    "orders": "Đơn hàng",
+    "emergencyInvoice": "Hoá đơn nhanh",
+    "dailyReport": "Báo cáo ngày",
+    "units": "Đơn vị & Quy đổi",
+    "storeLayout": "Sơ đồ cửa hàng",
+    "planogram": "Planogram",
+    "shelves": "Kệ hàng",
+    "pos": "Bán hàng (POS)",
+    "settings": "Cài đặt",
+    "management": "Quản lý"
+  },
+  "executiveOverview": {
+    "title1": "Tổng quan",
+    "title2": "Điều hành",
+    "subtitle": "Quản lý đế chế văn phòng phẩm của bạn với sự chính xác và chuyên nghiệp."
+  },
+  "dashboard": {
+    "sevenDays": "7 ngày",
+    "thirtyDays": "30 ngày",
+    "month": "Tháng",
+    "vitalStatistics": "Thống kê quan trọng",
+    "dateRange": "Khoảng thời gian",
+    "today": "Hôm nay",
+
+    "salesRevenuePerformance": "Hiệu suất Bán hàng & Doanh thu",
+    "operationsRetailIntelligence": "Vận hành & Phân tích Bán lẻ",
+    "inventoryAssetStockHealth": "Tài sản tồn kho & Tình trạng hàng hóa",
+
+    "performanceInsights": "Phân tích hiệu suất",
+    "rapidOperations": "Thao tác nhanh",
+
+    "ordersOverTime": "Đơn hàng theo thời gian",
+    "ordersOverTimeDescription": "Theo dõi số lượng đơn hàng và doanh thu",
+
+    "stockTrend": "Xu hướng tồn kho",
+    "stockTrendDescription": "Theo dõi tình trạng tồn kho theo từng khu vực",
+
+    "inventoryTurnoverUnit": "lần",
+
+    "na": "N/A",
+
+    "healthy": "Tốt",
+    "warning": "Cảnh báo",
+    "critical": "Nguy hiểm",
+
+    "healthyThreshold": "Tốt (≥ 80%)",
+    "warningThreshold": "Cảnh báo (65% - 80%)",
+    "criticalThreshold": "Nguy hiểm (< 65%)"
+  },
+   "common": {
+    "noProducts": "Chưa có dữ liệu",
+
+    "daily": "Hằng ngày",
+    "weekly": "Hằng tuần",
+    "monthly": "Hằng tháng",
+
+    "today": "Hôm nay",
+
+    "loading": "Đang tải...",
+    "empty": "Không có dữ liệu",
+
+    "yes": "Có",
+    "no": "Không",
+
+    "all": "Tất cả",
+
+    "unknown": "Không xác định",
+
+    "notAvailable": "N/A"
+  },
+  "salesRevenue": {
+    "title": "Hiệu suất Bán hàng & Doanh thu",
+    "retailInventoryValue": "Giá trị tồn kho bán lẻ",
+    "retailInventoryValueDescription": "Định giá theo giá bán hiện tại",
+    "averageOrderValue": "Giá trị đơn hàng trung bình",
+    "averageOrderValueDescription": "Giá trị thanh toán trung bình trong kỳ",
+    "completedOperations": "Giao dịch hoàn tất",
+    "completedOperationsDescription": "Phiếu bán hàng và phiếu thu đã hoàn thành"
+  },
+  "operations": {
+    "title": "Vận hành & Phân tích Bán lẻ",
+    "inventoryTurnover": "Vòng quay tồn kho",
+    "inventoryTurnoverDescription": "Tốc độ bán và bổ sung hàng tồn kho",
+    "bestSellingProduct": "Sản phẩm bán chạy nhất",
+    "topCategory": "Danh mục bán chạy",
+    "noProducts": "Chưa có dữ liệu"
+  },
+  "inventory": {
+    "title": "Tài sản tồn kho & Tình trạng hàng hóa",
+    "inventoryHealthScore": "Điểm sức khỏe tồn kho",
+    "inventoryHealthScoreDescription": "Tỷ lệ sản phẩm có mức tồn kho an toàn",
+    "totalSkuVariants": "Tổng số biến thể SKU",
+    "totalSkuVariantsDescription": "Biến thể sản phẩm đang hoạt động",
+    "lowStockProducts": "Sản phẩm sắp hết hàng",
+    "lowStockProductsDescription": "SKU dưới mức tồn kho an toàn",
+    "outOfStockProducts": "Sản phẩm hết hàng",
+    "outOfStockProductsDescription": "SKU không còn số lượng trong kho",
+    "assetCostValue": "Giá trị vốn tồn kho",
+    "assetCostValueDescription": "Định giá theo giá nhập",
+    "pendingBacklog": "Đơn hàng chờ xử lý",
+    "pendingBacklogDescription": "Đơn hàng hậu cần đang chờ xử lý"
+  },
+  "insights": {
+    "title": "Phân tích hiệu suất",
+    "ordersOverTime": "Đơn hàng theo thời gian",
+    "ordersOverTimeDescription": "Theo dõi số lượng đơn hàng và doanh thu",
+    "daily": "Hằng ngày",
+    "weekly": "Hằng tuần",
+    "monthly": "Hằng tháng"
+  },
+  "stockTrend": {
+    "title": "Xu hướng tồn kho",
+    "description": "Theo dõi tình trạng tồn kho theo từng khu vực",
+    "stationery": "Văn phòng phẩm",
+    "healthy": "Tốt (≥80%)",
+    "warning": "Cảnh báo (65% - 80%)",
+    "critical": "Nguy hiểm (<65%)"
+  },
+  "quickActions": {
+    "title": "Thao tác nhanh",
+    "addProduct": "Thêm sản phẩm",
+    "addProductDescription": "Tạo sản phẩm văn phòng phẩm mới",
+    "stockIn": "Nhập kho",
+    "stockInDescription": "Nhận hàng từ nhà cung cấp",
+    "createOrder": "Tạo đơn hàng",
+    "createOrderDescription": "Bắt đầu phiên bán hàng mới"
+  } ,
+  "products": {
+    "title": "Sản phẩm",
+    "subtitle": "Quản lý sản phẩm và theo dõi hiệu suất",
+
+    "totalProducts": "Tổng sản phẩm",
+    "totalStock": "Tổng tồn kho",
+
+    "searchPlaceholder": "Tìm kiếm sản phẩm...",
+
+    "addProduct": "Thêm sản phẩm",
+    "filter": "Bộ lọc",
+
+    "table": {
+      "productName": "Tên sản phẩm",
+      "category": "Danh mục",
+      "totalSku": "Tổng SKU",
+      "totalStock": "Tổng tồn kho",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+
+    "manageSkus": "Quản lý SKU",
+
+    "empty": {
+      "title": "Chưa có sản phẩm",
+      "description": "Hãy thêm sản phẩm đầu tiên của bạn."
+    }
+  },
+
+  "productStatus": {
+    "active": "Đang hoạt động",
+    "inactive": "Ngừng hoạt động",
+    "draft": "Bản nháp",
+    "archived": "Đã lưu trữ"
+  }
+}

@@ -1,0 +1,67 @@
+import { prisma } from "@/shared/lib/prisma";
+import { CreateUnitConversionDTO, UpdateUnitConversionDTO } from "../dtos/unitconversion.dto";
+
+export class UnitConversionRepository {
+    async create(data: CreateUnitConversionDTO) {
+        return await prisma.unitConversion.create({
+            data: {
+                ratio: data.ratio,
+                fromUnitId: data.fromUnitId,
+                toUnitId: data.toUnitId,
+                product: {
+                    connect: {
+                        id: data.productId,
+                    },
+                },
+            },
+        });
+    }
+
+    async findAll() {
+        return await prisma.unitConversion.findMany({
+            include: {
+                product: true,
+                fromUnit: true,
+                toUnit: true
+            }
+        });
+    }
+
+    async findById(id: string) {
+        return await prisma.unitConversion.findUnique({
+            where: { id },
+            include: {
+                product: true,
+                fromUnit: true,
+                toUnit: true
+            }
+        });
+    }
+
+    async update(id: string, data: UpdateUnitConversionDTO) {
+        const { productId, ...rest } = data;
+        return await prisma.unitConversion.update({
+            where: { id },
+            data: {
+                ...rest,
+                ...(productId && {
+                    product: {
+                        connect: { id: productId }
+                    }
+                })
+            },
+        });
+    }
+
+    async delete(id: string) {
+        return await prisma.unitConversion.delete({
+            where: { id },
+        });
+    }
+
+    async findByProductAndFromUnit(productId: string, fromUnitId: string) {
+        return await prisma.unitConversion.findFirst({
+            where: { productId, fromUnitId },
+        });
+    }
+}
