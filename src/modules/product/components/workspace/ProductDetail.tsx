@@ -5,7 +5,7 @@ import { Card, CardTitle, CardDescription } from "@/shared/components/ui/Card";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/shared/components/ui/Table";
 import type { ProductJson } from "@/modules/product/lib/serializeProduct";
 
-const priceFmt = new Intl.NumberForma"vi-VN";
+const priceFmt = new Intl.NumberFormat("vi-VN");
 
 interface ProductDetailProps {
   product: ProductJson | null;

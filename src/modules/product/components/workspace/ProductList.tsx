@@ -15,7 +15,7 @@ export function ProductList({ products, selectedId, onSelect }: ProductListProps
     <Card padding="sm">
       <CardHeader className="mb-4">
         <CardTitle className="text-sm font-bold uppercase tracking-wider text-premium-muted">
-          {"Products ("}{products.length})
+          {"Products ("}{products.length}{")"}
         </CardTitle>
       </CardHeader>
       {products.length === 0 ? (

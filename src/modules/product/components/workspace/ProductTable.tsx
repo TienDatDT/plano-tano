@@ -26,7 +26,6 @@ export function ProductTable({
   onEdit,
   onDelete,
 }: ProductTableProps) {
-  const {i18n} = useTranslation();
   const allSelected = products.length > 0 && selectedRowIds.size === products.length;
   const indeterminate = selectedRowIds.size > 0 && selectedRowIds.size < products.length;
 
