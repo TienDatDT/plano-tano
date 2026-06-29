@@ -28,6 +28,12 @@ export function CategoryManagement() {
 
   const [selectedCategory, setSelectedCategory] =
     useState<Category | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filteredCategories = categories.filter((c) =>
+    c.name.toLowerCase().includes(search.toLowerCase()) ||
+    c.description?.toLowerCase().includes(search.toLowerCase())
+  );
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -106,10 +112,6 @@ export function CategoryManagement() {
             }
           },
         },
-
-        cancel: {
-          label: "Cancel",
-        },
       }
     );
   };
@@ -151,7 +153,12 @@ export function CategoryManagement() {
         />
 
         <section className="rounded-2xl border border-premium-border bg-white px-5 py-4 shadow-sm">
-          <CategoryFilterBar />
+          <CategoryFilterBar
+            search={search}
+            onSearchChange={setSearch}
+            activeFiltersCount={search ? 1 : 0}
+            onReset={() => setSearch("")}
+          />
         </section>
 
         <div className="space-y-4">
@@ -165,7 +172,7 @@ export function CategoryManagement() {
             </div>
           ) : (
             <CategoryTable
-              categories={categories}
+              categories={filteredCategories}
               onEdit={handleEdit}
               onDelete={handleDelete}
             />
