@@ -7,6 +7,7 @@ import { Plus, Trash2, X, Loader2, Edit3 } from 'lucide-react';
 import { formatCurrency } from '@/shared/lib/formatters';
 import { updateEmergencyInvoiceSchema } from '../types/emergency-invoice.types';
 import type { UpdateEmergencyInvoiceInput, EmergencyInvoice } from '../types/emergency-invoice.types';
+import { useKeyboardShortcut } from '@/shared/hooks/useKeyboardShortcut';
 
 interface Props {
   invoice: EmergencyInvoice | null;
@@ -18,6 +19,7 @@ interface Props {
 
 export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit }: Props) {
   const [submitting, setSubmitting] = useState(false);
+
 
   const {
     register,
@@ -45,6 +47,7 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
     return sum + qty * price;
   }, 0) ?? 0;
 
+  
   // Load existing data when modal opens
   useEffect(() => {
     if (isOpen && invoice) {
@@ -63,6 +66,14 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
       });
     }
   }, [isOpen, invoice, reset]);
+  useKeyboardShortcut([
+    {
+      key: "Enter",
+      ctrl: true,
+      callback: () => 
+        append({ productName: "", quantity: 1, unitPrice: 0 })
+    },
+  ]);
 
   const handleFormSubmit = async (data: UpdateEmergencyInvoiceInput) => {
     if (!invoice) return;
@@ -114,6 +125,17 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
         {/* Body */}
         <form
           id="edit-invoice-form"
+          onKeyDown={(e) => {
+          if (e.ctrlKey && e.key === "Enter") {
+            e.preventDefault();
+
+            append({
+              productName: "",
+              quantity: 1,
+              unitPrice: 0,
+            });
+          }
+        }}
           onSubmit={handleSubmit(handleFormSubmit)}
           className="flex flex-col flex-1 overflow-hidden"
         >

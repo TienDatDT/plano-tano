@@ -1,9 +1,7 @@
-"use client";
 import { CategoryManagement } from "@/modules/category/components/CategoryManagemnet";
+import { requireRole } from "@/modules/auth/guards/role.guard";
 
-
-
-export default function CategoriesPage() {
+export default async function CategoriesPage() {
+  await requireRole(['ADMIN']);
   return <CategoryManagement />;
 }
-

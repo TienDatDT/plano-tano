@@ -1,4 +1,4 @@
-import { Database, MonitorSmartphone, LayoutGrid } from "lucide-react";
+import { Database, MonitorSmartphone, LayoutGrid, Zap } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -21,7 +21,7 @@ export default function Home() {
         </div>
 
         {/* Menu Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
           {/* Admin Management */}
           <Link
             href="/admin/dashboard"
@@ -73,6 +73,18 @@ export default function Home() {
             <h2 className="text-lg font-semibold text-slate-900 mb-1.5">{"Store Layout"}</h2>
             <p className="text-sm text-slate-500 leading-relaxed">
               {"Visualize and arrange inventory on physical store shelves."}</p>
+          </Link>
+
+          <Link
+            href="/admin/emergency-invoices"
+            className="group flex flex-col bg-white p-6 rounded-2xl border border-[#E6F0EB] hover:border-[#6BAF92] hover:shadow-xl hover:shadow-[#6BAF92]/10 transition-all duration-200 transform hover:-translate-y-1 active:scale-95"
+          >
+            <div className="w-12 h-12 bg-[#F4F8F6] group-hover:bg-[#6BAF92] text-[#6BAF92] group-hover:text-white rounded-full flex items-center justify-center mb-5 transition-colors duration-200">
+              <Zap strokeWidth={2} className="w-6 h-6" />
+            </div>
+            <h2 className="text-lg font-semibold text-slate-900 mb-1.5">{"Emergency Invoices"}</h2>
+            <p className="text-sm text-slate-500 leading-relaxed">
+              {"Fasting for create the invoice"}</p>
           </Link>
         </div>
       </main>

@@ -7,6 +7,7 @@ import { Plus, Trash2, X, Loader2, FileText } from 'lucide-react';
 import { formatCurrency } from '@/shared/lib/formatters';
 import { createEmergencyInvoiceSchema } from '../types/emergency-invoice.types';
 import type { CreateEmergencyInvoiceInput } from '../types/emergency-invoice.types';
+import { useKeyboardShortcut } from '@/shared/hooks/useKeyboardShortcut';
 
 interface Props {
   isOpen: boolean;
@@ -54,6 +55,14 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit }: Pro
       });
     }
   }, [isOpen, reset]);
+  useKeyboardShortcut([
+      {
+        key: "Enter",
+        ctrl: true,
+        callback: () => 
+          append({ productName: "", quantity: 1, unitPrice: 0 })
+      },
+    ]);
 
   const handleFormSubmit = async (data: CreateEmergencyInvoiceInput) => {
     try {

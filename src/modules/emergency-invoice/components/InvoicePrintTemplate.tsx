@@ -29,9 +29,9 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
 
       {/* Header */}
       <div className="flex flex-col items-center mb-8 border-b pb-4 border-gray-300">
-        <h1 className="text-2xl font-black uppercase tracking-widest text-center mb-2">TanaPlano</h1>
-        <p className="text-gray-600 text-xs text-center">Quản lý Cửa Hàng Chuyên Nghiệp</p>
-        <p className="text-gray-600 text-xs text-center mt-1">SĐT: 1900 xxxx - Email: support@tanaplano.vn</p>
+        <h1 className="text-2xl font-black uppercase tracking-widest text-center mb-2">Nhà sách Kim Ngân</h1>
+        <p className="text-gray-600 text-xs text-center">Chuyên cung cấp văn phòng phẩm, sách giáo khoa, dụng cụ học tập...</p>
+        <p className="text-gray-800 text-xs text-center mt-1">Địa chỉ: 242 Tỉnh lộ 942, Long Điền, An Giang - SĐT: 0296 3625 370</p>
       </div>
 
       {/* Title */}

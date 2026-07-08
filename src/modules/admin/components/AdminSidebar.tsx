@@ -21,13 +21,18 @@ import {
   Zap,
   Menu,
   X,
+  LogOut,
+  Users,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/modules/auth/context/AuthContext";
+import { hasPermission } from "@/modules/auth/config/permissions";
 
 export function AdminSidebar() {
   const pathname = usePathname();
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const { currentUser, signOut } = useAuth();
 
   // Tự đóng sidebar mobile mỗi khi chuyển trang
   useEffect(() => {
@@ -113,7 +118,15 @@ export function AdminSidebar() {
       label: t("nav.pos"),
       icon: CreditCard,
     },
+    {
+      href: "/admin/users",
+      label: "Quản lý người dùng", // Hoặc t("nav.users") nếu đã thêm vào i18n
+      icon: Users,
+    },
   ];
+
+  // Filter routes based on user role
+  const filteredNav = nav.filter((item) => hasPermission(item.href, currentUser?.role || 'VIEWER'));
 
   return (
     <>
@@ -175,7 +188,7 @@ export function AdminSidebar() {
           className="flex flex-1 flex-col gap-1.5 overflow-y-auto px-4"
           aria-label="Main"
         >
-          {nav.map((item) => {
+          {filteredNav.map((item) => {
             const active =
               pathname === item.href ||
               (item.href !== "/admin/dashboard" &&
@@ -205,10 +218,34 @@ export function AdminSidebar() {
           })}
         </nav>
 
-        <div className="mt-auto px-4">
+        <div className="mt-auto px-4 border-t border-premium-border/50 pt-4 flex flex-col gap-1">
+          {currentUser && (
+            <div className="flex items-center gap-3 px-3.5 py-3 mb-2 rounded-xl bg-premium-bg/50 border border-premium-border/50">
+              <div className="h-8 w-8 rounded-full bg-premium-primary/10 flex items-center justify-center text-premium-primary font-bold shadow-sm">
+                {currentUser.fullName?.[0] || currentUser.email[0].toUpperCase()}
+              </div>
+              <div className="flex flex-col min-w-0 flex-1">
+                <span className="text-sm font-bold text-neutral-900 truncate">
+                  {currentUser.fullName || "User"}
+                </span>
+                <span className="text-[10px] font-bold text-premium-muted uppercase">
+                  {currentUser.role}
+                </span>
+              </div>
+            </div>
+          )}
+
           <button className="flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-premium-muted transition-all hover:bg-premium-bg hover:text-premium-primary">
             <Settings className="h-5 w-5 opacity-70" />
             <span>{t("nav.settings")}</span>
+          </button>
+          
+          <button 
+            onClick={signOut}
+            className="flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-red-500/70 transition-all hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/10"
+          >
+            <LogOut className="h-5 w-5 opacity-70" />
+            <span>Đăng xuất</span>
           </button>
         </div>
       </aside>

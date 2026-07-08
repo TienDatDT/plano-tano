@@ -7,6 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import i18n from "@/lib/i18n";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/modules/auth/context/AuthContext";
 
 type AdminHeaderProps = {
   /** When false, search is hidden (e.g. suppliers page). */
@@ -20,6 +21,7 @@ export function AdminHeader({
 }: AdminHeaderProps) {
   const { query, setQuery } = useAdminSearch();
   const {i18n} = useTranslation();
+  const { currentUser } = useAuth();
 
   return (
     <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-premium-border bg-premium-bg/40 px-6 backdrop-blur-xl sm:px-8">
@@ -80,8 +82,12 @@ export function AdminHeader({
             <User className="h-5 w-5" />
           </div>
           <div className="hidden text-left sm:block">
-            <p className="text-sm font-bold text-neutral-900 leading-none">{"Admin"}</p>
-            <p className="text-[10px] font-bold text-premium-muted mt-1 uppercase tracking-wider opacity-70">{"Superuser"}</p>
+            <p className="text-sm font-bold text-neutral-900 dark:text-white leading-none">
+              {currentUser?.fullName || "Người dùng"}
+            </p>
+            <p className="text-[10px] font-bold text-premium-muted mt-1 uppercase tracking-wider opacity-70">
+              {currentUser?.role || "Khách"}
+            </p>
           </div>
         </button>
       </div>

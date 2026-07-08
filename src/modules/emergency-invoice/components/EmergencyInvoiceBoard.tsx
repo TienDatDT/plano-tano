@@ -18,6 +18,7 @@ import type {
   CreateEmergencyInvoiceInput,
   UpdateEmergencyInvoiceInput,
 } from '../types/emergency-invoice.types';
+import { useKeyboardShortcut } from '@/shared/hooks/useKeyboardShortcut';
 
 type Period = 'today' | 'thisWeek' | 'thisMonth' | 'custom';
 
@@ -167,6 +168,13 @@ export function EmergencyInvoiceBoard() {
     setIsEditOpen(true);
   };
 
+  useKeyboardShortcut([
+    {
+      key:"n",
+      shift: true,
+      callback: () => setIsCreateOpen(true)
+    }
+  ])
   useEffect(() => {
     if (printInvoice && printContentRef.current) {
       // Dùng setTimeout để đảm bảo template đã render xong

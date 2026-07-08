@@ -342,6 +342,51 @@ model EmergencyInvoiceItem {
   @@map("emergency_invoice_items")
 }
 
+enum UserRole {
+  ADMIN
+  STAFF
+  VIEWER
+}
+
+model User {
+  id             String   @id @default(cuid())
+
+  username       String?  @unique
+  email          String   @unique
+  passwordHash   String
+
+  isActive       Boolean  @default(true)
+  emailVerified  Boolean  @default(false)
+
+  lastLoginAt    DateTime?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  profile        UserProfile?
+
+  @@map("Users")
+}
+
+model UserProfile {
+  id          String   @id @default(cuid())
+
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fullName    String?
+  avatarUrl   String?
+
+  role        UserRole @default(STAFF)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([role])
+
+  @@map("UserProfiles")
+}
+
 enum ShelfLayoutType {
   DIMENSION
   GRID
