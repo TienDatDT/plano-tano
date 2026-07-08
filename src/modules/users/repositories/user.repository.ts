@@ -39,7 +39,14 @@ class UserRepository {
 
   async create(data: { id: string; email: string; role: UserRole; fullName?: string }) {
     return prisma.userProfile.create({
-      data,
+      data: {
+        ...data,
+        user: {
+          connect: {
+            id: data.id,
+          },
+        },
+      },
     });
   }
 }

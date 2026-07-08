@@ -43,7 +43,7 @@ class AuthService {
         data: {
           id: user.id, // Keep the same ID for the profile as the user for 1:1, or use userId
           userId: user.id,
-          email: user.email,
+          // email: user.email,
           role: 'STAFF', 
         }
       });
