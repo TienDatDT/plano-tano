@@ -19,7 +19,7 @@ import type {
   UpdateEmergencyInvoiceInput,
 } from '../types/emergency-invoice.types';
 import { useKeyboardShortcut } from '@/shared/hooks/useKeyboardShortcut';
-
+import { InvoiceBookModal } from './InvoiceBookModal';
 type Period = 'today' | 'thisWeek' | 'thisMonth' | 'custom';
 
 export function EmergencyInvoiceBoard() {
@@ -52,7 +52,7 @@ export function EmergencyInvoiceBoard() {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [search, setSearch] = useState('');
-
+  const [bookOpen, setBookOpen] = useState(false);
   // ── Modal / drawer state ─────────────────────────
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -133,6 +133,17 @@ export function EmergencyInvoiceBoard() {
   useEffect(() => {
     loadSummary();
   }, [loadSummary]);
+
+  // api/emergency-invoice.api.ts
+  async function getInvoicesByDateRange(
+    fromDate: string,
+    toDate: string
+  ): Promise<EmergencyInvoice[]> {
+    const res = await fetch(`/api/emergency-invoices?from=${fromDate}&to=${toDate}`);
+    if (!res.ok) throw new Error('Failed to fetch invoices');
+    const json = await res.json();
+    return json.data; // tùy response shape thực tế của bạn
+  }
 
   // ── Handlers ──────────────────────────────────────
   const handleCreate = async (data: CreateEmergencyInvoiceInput) => {
@@ -216,14 +227,20 @@ export function EmergencyInvoiceBoard() {
             </p>
           </div>
         </div>
-        <button
-          id="btn-create-emergency-invoice"
-          onClick={() => setIsCreateOpen(true)}
-          className="flex w-full items-center justify-center gap-2 px-5 py-2.5 bg-[image:var(--image-gold-gradient)] text-white text-xs font-black rounded-2xl shadow-gold hover:opacity-90 transition-all active:scale-95 sm:w-auto"
-        >
-          <Plus className="w-4 h-4" />
-          Hóa đơn mới
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setBookOpen(true)}
+            className="flex w-full items-center justify-center gap-2 px-5 py-2.5 bg-[image:var(--image-gold-gradient)] text-white text-xs font-black rounded-2xl shadow-gold hover:opacity-90 transition-all active:scale-95 sm:w-auto"
+            >Xem hóa đơn dạng sách</button>
+          <button
+            id="btn-create-emergency-invoice"
+            onClick={() => setIsCreateOpen(true)}
+            className="flex w-full items-center justify-center gap-2 px-5 py-2.5 bg-[image:var(--image-gold-gradient)] text-white text-xs font-black rounded-2xl shadow-gold hover:opacity-90 transition-all active:scale-95 sm:w-auto"
+          >
+            <Plus className="w-4 h-4" />
+            Hóa đơn mới
+          </button>
+
+        </div>
       </div>
 
       {/* Filters */}
@@ -345,6 +362,16 @@ export function EmergencyInvoiceBoard() {
           <InvoicePrintTemplate ref={printContentRef} invoice={printInvoice} />
         )}
       </div>
+
+      <InvoiceBookModal
+  isOpen={bookOpen}
+  onClose={() => setBookOpen(false)}
+  invoices={invoices}
+  loading={loadingInvoices}
+  businessName="Nhà sách Kim Ngân"
+  address="242, tỉnh lộ 942, Long Điền, An Giang"
+  taxCode="1234567890"
+/>
     </div>
   );
 }

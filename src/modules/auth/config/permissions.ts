@@ -4,6 +4,7 @@ export const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
   '/admin/users': ['ADMIN'],
   '/admin/categories': ['ADMIN'],
   '/admin/units': ['ADMIN'],
+  '/admin/bookviewer': ['ADMIN'],
   '/admin/reports': ['ADMIN', 'VIEWER'],
   '/admin/suppliers': ['ADMIN', 'STAFF'],
   '/admin/stock-in': ['ADMIN', 'STAFF'],
