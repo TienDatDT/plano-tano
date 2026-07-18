@@ -8,6 +8,7 @@ import { formatCurrency } from '@/shared/lib/formatters';
 import { updateEmergencyInvoiceSchema } from '../types/emergency-invoice.types';
 import type { UpdateEmergencyInvoiceInput, EmergencyInvoice } from '../types/emergency-invoice.types';
 import { useKeyboardShortcut } from '@/shared/hooks/useKeyboardShortcut';
+import { z } from 'zod';
 
 interface Props {
   invoice: EmergencyInvoice | null;
@@ -40,7 +41,11 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
     reset,
     setValue,
     formState: { errors },
-  } = useForm<UpdateEmergencyInvoiceInput>({
+  } = useForm<
+  z.input<typeof updateEmergencyInvoiceSchema>,
+  any,
+  z.output<typeof updateEmergencyInvoiceSchema>
+>({
     resolver: zodResolver(updateEmergencyInvoiceSchema),
     defaultValues: {
       invoiceDate: '',

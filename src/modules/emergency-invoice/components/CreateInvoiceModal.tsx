@@ -8,6 +8,7 @@ import { formatCurrency } from '@/shared/lib/formatters';
 import { createEmergencyInvoiceSchema } from '../types/emergency-invoice.types';
 import type { CreateEmergencyInvoiceInput } from '../types/emergency-invoice.types';
 import { useKeyboardShortcut } from '@/shared/hooks/useKeyboardShortcut';
+import { z } from 'zod';
 
 interface Props {
   isOpen: boolean;
@@ -17,11 +18,11 @@ interface Props {
 }
 
 // Thêm helper này ở ngoài component (trên DISCOUNT_PRESETS)
-  const getLocalDateTimeString = () => {
-    const now = new Date();
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
-  };
+const getLocalDateTimeString = () => {
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+};
 const DISCOUNT_PRESETS = [0, 4, 8] as const;
 
 export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit }: Props) {
@@ -40,13 +41,17 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit }: Pro
     reset,
     setValue,
     formState: { errors },
-  } = useForm<CreateEmergencyInvoiceInput>({
+  } = useForm<
+    z.input<typeof createEmergencyInvoiceSchema>,
+    any,
+    z.output<typeof createEmergencyInvoiceSchema>
+  >({
     resolver: zodResolver(createEmergencyInvoiceSchema),
     defaultValues: {
-    invoiceDate: getLocalDateTimeString(), // ← thay vì ''
-    note: '',
-    items: [{ productName: '', quantity: 1, unitPrice: 0, discountPercent: 0 }],
-  },
+      invoiceDate: getLocalDateTimeString(), // ← thay vì ''
+      note: '',
+      items: [{ productName: '', quantity: 1, unitPrice: 0, discountPercent: 0 }],
+    },
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: 'items' });
@@ -68,17 +73,17 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit }: Pro
   const grandTotal =
     discountMode === 'ITEM'
       ? watchedItems?.reduce((sum, item) => {
-          return sum + getLineTotal(item.quantity, item.unitPrice, item.discountPercent);
-        }, 0) ?? 0
+        return sum + getLineTotal(item.quantity, item.unitPrice, item.discountPercent);
+      }, 0) ?? 0
       : subTotal - (subTotal * invoiceDiscountPercent) / 100;
 
   useEffect(() => {
     if (!isOpen) {
       reset({
-      invoiceDate: getLocalDateTimeString(), // ← thay vì ''
-      note: '',
-      items: [{ productName: '', quantity: 1, unitPrice: 0, discountPercent: 0 }],
-    });
+        invoiceDate: getLocalDateTimeString(), // ← thay vì ''
+        note: '',
+        items: [{ productName: '', quantity: 1, unitPrice: 0, discountPercent: 0 }],
+      });
       setCustomDiscountRows({});
       setSelectedRows({});
       setBulkDiscountValue(0);
@@ -453,11 +458,10 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit }: Pro
                                   key={preset}
                                   type="button"
                                   onClick={() => handlePresetClick(field.id, index, preset)}
-                                  className={`h-9 flex-1 rounded-xl border text-[10px] font-black transition-all ${
-                                    !isCustom && discount === preset
-                                      ? 'bg-[image:var(--image-gold-gradient)] text-white border-transparent shadow-gold'
-                                      : 'border-premium-border text-neutral-600 hover:bg-premium-subtle'
-                                  }`}
+                                  className={`h-9 flex-1 rounded-xl border text-[10px] font-black transition-all ${!isCustom && discount === preset
+                                    ? 'bg-[image:var(--image-gold-gradient)] text-white border-transparent shadow-gold'
+                                    : 'border-premium-border text-neutral-600 hover:bg-premium-subtle'
+                                    }`}
                                 >
                                   {preset === 0 ? 'Không' : `${preset}%`}
                                 </button>
@@ -465,11 +469,10 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit }: Pro
                               <button
                                 type="button"
                                 onClick={() => handleCustomClick(field.id)}
-                                className={`h-9 flex-1 rounded-xl border text-[10px] font-black transition-all ${
-                                  isCustom
-                                    ? 'bg-[image:var(--image-gold-gradient)] text-white border-transparent shadow-gold'
-                                    : 'border-premium-border text-neutral-600 hover:bg-premium-subtle'
-                                }`}
+                                className={`h-9 flex-1 rounded-xl border text-[10px] font-black transition-all ${isCustom
+                                  ? 'bg-[image:var(--image-gold-gradient)] text-white border-transparent shadow-gold'
+                                  : 'border-premium-border text-neutral-600 hover:bg-premium-subtle'
+                                  }`}
                               >
                                 Khác
                               </button>
@@ -588,7 +591,7 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit }: Pro
                     {formatCurrency(subTotal, 'vi')}
                   </p>
                 )}
-                                <p className="text-[10px] text-premium-muted font-bold uppercase tracking-wider">
+                <p className="text-[10px] text-premium-muted font-bold uppercase tracking-wider">
                   Tổng cộng
                 </p>
                 <p className="text-2xl font-black text-neutral-900 mt-0.5 tracking-tight">

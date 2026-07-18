@@ -12,9 +12,10 @@ export const createEmergencyInvoiceItemSchema = z.object({
     .number()
     .min(0, 'Chiết khấu không được nhỏ hơn 0%')
     .max(100, 'Chiết khấu không được lớn hơn 100%')
-    .optional()
     .default(0),
 });
+
+
 
 export const createEmergencyInvoiceSchema = z.object({
   invoiceDate: z.string().optional().refine((val) => {
