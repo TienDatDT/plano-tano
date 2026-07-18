@@ -181,7 +181,7 @@ export function EmergencyInvoiceBoard() {
 
   useKeyboardShortcut([
     {
-      key:"n",
+      key: "n",
       shift: true,
       callback: () => setIsCreateOpen(true)
     }
@@ -230,7 +230,7 @@ export function EmergencyInvoiceBoard() {
         <div className="flex items-center gap-2">
           <button onClick={() => setBookOpen(true)}
             className="flex w-full items-center justify-center gap-2 px-5 py-2.5 bg-[image:var(--image-gold-gradient)] text-white text-xs font-black rounded-2xl shadow-gold hover:opacity-90 transition-all active:scale-95 sm:w-auto"
-            >Xem hóa đơn dạng sách</button>
+          >Xem hóa đơn dạng sách</button>
           <button
             id="btn-create-emergency-invoice"
             onClick={() => setIsCreateOpen(true)}
@@ -357,21 +357,32 @@ export function EmergencyInvoiceBoard() {
       />
 
       {/* Hidden Print Template */}
-      <div className="hidden print:block">
+      {/* Container ẩn để html2canvas chụp — KHÔNG dùng display:none */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: '-9999px',
+          zIndex: -1,
+          // Không set height cố định — để nội dung tự co giãn
+        }}
+        aria-hidden="true"
+      >
         {printInvoice && (
           <InvoicePrintTemplate ref={printContentRef} invoice={printInvoice} />
         )}
       </div>
 
+
       <InvoiceBookModal
-  isOpen={bookOpen}
-  onClose={() => setBookOpen(false)}
-  invoices={invoices}
-  loading={loadingInvoices}
-  businessName="Nhà sách Kim Ngân"
-  address="242, tỉnh lộ 942, Long Điền, An Giang"
-  taxCode="1234567890"
-/>
+        isOpen={bookOpen}
+        onClose={() => setBookOpen(false)}
+        invoices={invoices}
+        loading={loadingInvoices}
+        businessName="Nhà sách Kim Ngân"
+        address="242, tỉnh lộ 942, Long Điền, An Giang"
+        taxCode="1234567890"
+      />
     </div>
   );
 }

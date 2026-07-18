@@ -128,6 +128,7 @@ export class EmergencyInvoiceRepository {
       quantity: number;
       unitPrice: number;
       totalPrice: number;
+      discountPercent: number;
     }>;
   }): Promise<EmergencyInvoiceWithItems> {
     return await prisma.emergencyInvoice.create({
@@ -142,6 +143,7 @@ export class EmergencyInvoiceRepository {
             quantity: item.quantity,
             unitPrice: item.unitPrice,
             totalPrice: item.totalPrice,
+            discountPercent: item.discountPercent,
           })),
         },
       },
@@ -163,6 +165,7 @@ export class EmergencyInvoiceRepository {
         quantity: number;
         unitPrice: number;
         totalPrice: number;
+        discountPercent: number;
       }>;
     },
   ): Promise<EmergencyInvoiceWithItems> {
@@ -185,6 +188,7 @@ export class EmergencyInvoiceRepository {
               quantity: item.quantity,
               unitPrice: item.unitPrice,
               totalPrice: item.totalPrice,
+              discountPercent: item.discountPercent,
             })),
           },
         },

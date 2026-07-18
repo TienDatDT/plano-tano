@@ -8,6 +8,12 @@ export const createEmergencyInvoiceItemSchema = z.object({
   productName: z.string().min(1, 'Tên sản phẩm không được để trống'),
   quantity: z.number().int().min(1, 'Số lượng phải lớn hơn 0'),
   unitPrice: z.number().positive('Đơn giá phải lớn hơn 0'),
+  discountPercent: z
+    .number()
+    .min(0, 'Chiết khấu không được nhỏ hơn 0%')
+    .max(100, 'Chiết khấu không được lớn hơn 100%')
+    .optional()
+    .default(0),
 });
 
 export const createEmergencyInvoiceSchema = z.object({
@@ -40,6 +46,7 @@ export interface EmergencyInvoiceItem {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
+  discountPercent: number;
   createdAt: string;
 }
 

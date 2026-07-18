@@ -9,7 +9,19 @@ interface LedgerBookPageProps {
   businessName?: string;
   address?: string;
   taxCode?: string;
-  period?: string; // Kỳ kê khai, vd: "Tháng 07/2025"
+  period?: string;
+}
+
+// Co cỡ chữ diễn giải theo độ dài nội dung, tránh bị tràn/cắt khi dày chữ.
+// Ngưỡng dựa trên số ký tự thực tế của dòng dài nhất trong text (ước lượng ~ theo
+// bề rộng cột diễn giải, cột chiếm 6/12 = 50% width của trang 420px, trừ padding).
+function getDescFontSize(text: string): string {
+  const len = text?.length ?? 0;
+  if (len > 90) return '8px';   // trước là 7.5px, nâng sàn lên
+  if (len > 70) return '8.5px';
+  if (len > 50) return '9px';
+  if (len > 32) return '9.5px';
+  return '10px';
 }
 
 const LedgerBookPage = React.forwardRef<HTMLDivElement, LedgerBookPageProps>(
@@ -20,7 +32,7 @@ const LedgerBookPage = React.forwardRef<HTMLDivElement, LedgerBookPageProps>(
     return (
       <div
         ref={ref}
-        className="page bg-white w-full h-full p-6 flex flex-col border border-premium-border text-[10px]"
+        className="page bg-white w-full h-full p-6 flex flex-col border border-premium-border text-[10px] antialiased [text-rendering:optimizeLegibility]"
       >
         {/* Header thông tin hộ kinh doanh */}
         <div className="flex items-start justify-between mb-3">
@@ -92,7 +104,10 @@ const LedgerBookPage = React.forwardRef<HTMLDivElement, LedgerBookPageProps>(
               <div className="col-span-2 border-r border-neutral-300 px-1.5 py-1 text-center">
                 {idx === 0 ? row.date : ''}
               </div>
-              <div className="col-span-6 border-r border-neutral-300 px-1.5 py-1 truncate">
+              <div
+                className="col-span-6 border-r border-neutral-300 px-1.5 py-1 leading-tight break-words"
+                style={{ fontSize: getDescFontSize(row.description) }}
+              >
                 {row.description}
               </div>
               <div className="col-span-4 px-1.5 py-1 text-right font-semibold">

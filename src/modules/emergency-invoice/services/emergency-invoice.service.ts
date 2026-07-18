@@ -43,12 +43,18 @@ export class EmergencyInvoiceService {
     const data = createEmergencyInvoiceSchema.parse(raw) as CreateEmergencyInvoiceInput;
 
     // Calculate line totals
-    const items = data.items.map((item) => ({
-      productName: item.productName,
-      quantity: item.quantity,
-      unitPrice: item.unitPrice,
-      totalPrice: item.quantity * item.unitPrice,
-    }));
+    const items = data.items.map((item) => {
+      const rawTotal = item.quantity * item.unitPrice;
+      const discount = item.discountPercent || 0;
+      const totalPrice = rawTotal - (rawTotal * discount) / 100;
+      return {
+        productName: item.productName,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        totalPrice,
+        discountPercent: discount,
+      };
+    });
 
     const totalAmount = items.reduce((sum, item) => sum + item.totalPrice, 0);
     const invoiceCode = await generateInvoiceCode();
@@ -75,12 +81,18 @@ export class EmergencyInvoiceService {
 
     const data = updateEmergencyInvoiceSchema.parse(raw) as UpdateEmergencyInvoiceInput;
 
-    const items = data.items.map((item) => ({
-      productName: item.productName,
-      quantity: item.quantity,
-      unitPrice: item.unitPrice,
-      totalPrice: item.quantity * item.unitPrice,
-    }));
+    const items = data.items.map((item) => {
+      const rawTotal = item.quantity * item.unitPrice;
+      const discount = item.discountPercent || 0;
+      const totalPrice = rawTotal - (rawTotal * discount) / 100;
+      return {
+        productName: item.productName,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        totalPrice,
+        discountPercent: discount,
+      };
+    });
 
     const totalAmount = items.reduce((sum, item) => sum + item.totalPrice, 0);
     const invoiceDate = data.invoiceDate ? new Date(data.invoiceDate) : undefined;
@@ -156,11 +168,12 @@ function serializeInvoice(invoice: EmergencyInvoiceWithItems) {
 
     totalAmount: Number(invoice.totalAmount),
 
-    items: invoice.items.map((item) => ({
+    items: invoice.items.map((item: any) => ({
       ...item,
       createdAt: item.createdAt.toISOString(),
       unitPrice: Number(item.unitPrice),
       totalPrice: Number(item.totalPrice),
+      discountPercent: Number(item.discountPercent || 0),
     })),
   };
 }
