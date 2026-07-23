@@ -23,7 +23,8 @@ export const createEmergencyInvoiceSchema = z.object({
     const selectedDate = new Date(val);
     const now = new Date();
     return selectedDate <= now;
-  }, { message: 'Ngày hóa đơn không được lớn hơn thời điểm hiện tại' }),
+  }, { message: 'Ngày hóa đơn không được lớn hơn thời điểm hiện tại' })
+  .transform((val) => (val ? new Date(val).toISOString() : val)),
   note: z.string().optional(),
   items: z
     .array(createEmergencyInvoiceItemSchema)

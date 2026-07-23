@@ -117,16 +117,21 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
   ]);
 
   const handleFormSubmit = async (data: UpdateEmergencyInvoiceInput) => {
-    if (!invoice) return;
-    try {
-      setSubmitting(true);
-      await onSubmit(invoice.id, data);
-      onSuccess();
-      onClose();
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  if (!invoice) return;
+  try {
+    setSubmitting(true);
+    await onSubmit(invoice.id, {
+      ...data,
+      invoiceDate: data.invoiceDate
+        ? new Date(data.invoiceDate).toISOString()
+        : data.invoiceDate,
+    });
+    onSuccess();
+    onClose();
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   const handlePresetClick = (fieldId: string, index: number, value: number) => {
     setCustomDiscountRows((prev) => ({ ...prev, [fieldId]: false }));

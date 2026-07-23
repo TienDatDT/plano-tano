@@ -102,15 +102,18 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit }: Pro
   ]);
 
   const handleFormSubmit = async (data: CreateEmergencyInvoiceInput) => {
-    try {
-      setSubmitting(true);
-      await onSubmit(data);
-      onSuccess();
-      onClose();
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  try {
+    setSubmitting(true);
+    await onSubmit({
+      ...data,
+      invoiceDate: data.invoiceDate ? new Date(data.invoiceDate).toISOString() : data.invoiceDate,
+    });
+    onSuccess();
+    onClose();
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   const handlePresetClick = (fieldId: string, index: number, value: number) => {
     setCustomDiscountRows((prev) => ({ ...prev, [fieldId]: false }));
