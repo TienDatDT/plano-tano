@@ -50,7 +50,7 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
           Chuyên cung cấp văn phòng phẩm, sách giáo khoa, dụng cụ học tập...
         </p>
         <p className="text-black text-xs text-center mt-0.5 font-medium">
-          Địa chỉ: 242 Tỉnh lộ 942, Long Điền, An Giang
+          Địa chỉ: 242 Ấp Thị 1, xã Long Điền, tỉnh An Giang.
         </p>
         <p className="text-black text-xs text-center font-medium">
           SĐT/ Zalo : 0397 169 935
