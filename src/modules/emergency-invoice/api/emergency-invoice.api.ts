@@ -94,6 +94,24 @@ export const emergencyInvoiceApi = {
   },
 
   /**
+   * Bulk delete multiple invoices by IDs
+   */
+  async bulkDeleteInvoices(
+    ids: string[],
+  ): Promise<{ success: boolean; data: { deletedCount: number } }> {
+    const res = await fetch(`${BASE}/bulk-delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Không thể xóa các hóa đơn đã chọn');
+    }
+    return res.json();
+  },
+
+  /**
    * Get dashboard summary stats
    */
   async getSummary(

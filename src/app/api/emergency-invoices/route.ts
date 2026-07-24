@@ -37,3 +37,4 @@ export async function POST(request: NextRequest) {
     return createError(error.message || 'Không thể tạo hóa đơn', 400);
   }
 }
+

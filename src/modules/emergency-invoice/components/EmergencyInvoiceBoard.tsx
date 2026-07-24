@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Loader2, StickyNote, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Loader2, StickyNote, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useReactToPrint } from 'react-to-print';
 import { emergencyInvoiceApi } from '../api/emergency-invoice.api';
@@ -12,13 +12,13 @@ import { CreateInvoiceModal } from './CreateInvoiceModal';
 import { EditInvoiceModal } from './EditInvoiceModal';
 import { InvoiceDetailDrawer } from './InvoiceDetailDrawer';
 import { InvoicePrintTemplate } from './InvoicePrintTemplate';
+import { useKeyboardShortcut } from '@/shared/hooks/useKeyboardShortcut';
 import type {
   EmergencyInvoice,
   EmergencyInvoiceSummary as SummaryType,
   CreateEmergencyInvoiceInput,
   UpdateEmergencyInvoiceInput,
 } from '../types/emergency-invoice.types';
-import { useKeyboardShortcut } from '@/shared/hooks/useKeyboardShortcut';
 import { InvoiceBookModal } from './InvoiceBookModal';
 type Period = 'today' | 'thisWeek' | 'thisMonth' | 'custom';
 
@@ -55,6 +55,7 @@ export function EmergencyInvoiceBoard() {
   const [bookOpen, setBookOpen] = useState(false);
   // ── Modal / drawer state ─────────────────────────
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [duplicateSource, setDuplicateSource] = useState<Partial<CreateEmergencyInvoiceInput> | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<EmergencyInvoice | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -62,6 +63,21 @@ export function EmergencyInvoiceBoard() {
   // ── Print state ──────────────────────────────────
   const [printInvoice, setPrintInvoice] = useState<EmergencyInvoice | null>(null);
   const printContentRef = useRef<HTMLDivElement | null>(null);
+
+  // ── Bulk select state ─────────────────────────────
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+  useKeyboardShortcut([
+    {
+      key: 'N',
+      shift: true,
+      callback: () => {
+        () => { setDuplicateSource(null); setIsCreateOpen(true); }
+      }
+    }
+  ])
 
   const handlePrintAction = useReactToPrint({
     contentRef: printContentRef,
@@ -149,7 +165,20 @@ export function EmergencyInvoiceBoard() {
   const handleCreate = async (data: CreateEmergencyInvoiceInput) => {
     await emergencyInvoiceApi.createInvoice(data);
     toast.success('Hóa đơn đã được tạo thành công!');
+    setDuplicateSource(null);
     await Promise.all([loadInvoices(1), loadSummary()]);
+  };
+  const handleDuplicate = (invoice: EmergencyInvoice) => {
+    setDuplicateSource({
+      note: invoice.note ?? '',
+      items: invoice.items?.map((item) => ({
+        productName: item.productName,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice ?? 0, // tuỳ field thực tế trong EmergencyInvoiceItem
+        discountPercent: item.discountPercent ?? 0,
+      })) ?? [],
+    });
+    setIsCreateOpen(true);
   };
 
   const handleEditSubmit = async (id: string, data: UpdateEmergencyInvoiceInput) => {
@@ -167,6 +196,59 @@ export function EmergencyInvoiceBoard() {
     } catch (e: any) {
       toast.error(e.message || 'Không thể xóa hóa đơn');
     }
+  };
+  const toggleSelectMode = () => {
+    setSelectMode((prev) => !prev);
+    setSelectedIds(new Set());
+  };
+
+  const handleToggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedIds.size === invoices.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(invoices.map((inv) => inv.id)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    const count = selectedIds.size;
+    if (!confirm(`Bạn có chắc muốn xóa ${count} hóa đơn đã chọn? Hành động này không thể hoàn tác.`)) {
+      return;
+    }
+
+    setIsBulkDeleting(true);
+    const ids = Array.from(selectedIds);
+    const results = await Promise.allSettled(
+      ids.map((id) => emergencyInvoiceApi.deleteInvoice(id)),
+    );
+
+    const failedCount = results.filter((r) => r.status === 'rejected').length;
+    const successCount = ids.length - failedCount;
+
+    if (successCount > 0) {
+      toast.success(`Đã xóa ${successCount} hóa đơn`);
+    }
+    if (failedCount > 0) {
+      toast.error(`${failedCount} hóa đơn xóa không thành công`);
+    }
+
+    setIsBulkDeleting(false);
+    setSelectedIds(new Set());
+    setSelectMode(false);
+    await Promise.all([loadInvoices(pagination.page), loadSummary()]);
   };
 
   const handleView = (invoice: EmergencyInvoice) => {
@@ -228,12 +310,21 @@ export function EmergencyInvoiceBoard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={toggleSelectMode}
+            className={`flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-black rounded-2xl transition-all active:scale-95 border
+      ${selectMode
+                ? 'bg-neutral-800 text-white border-neutral-800 hover:opacity-90'
+                : 'bg-white text-neutral-700 border-premium-border hover:bg-slate-50'}`}
+          >
+            {selectMode ? 'Hủy chọn' : 'Chọn nhiều'}
+          </button>
           <button onClick={() => setBookOpen(true)}
             className="flex w-full items-center justify-center gap-2 px-5 py-2.5 bg-[image:var(--image-gold-gradient)] text-white text-xs font-black rounded-2xl shadow-gold hover:opacity-90 transition-all active:scale-95 sm:w-auto"
           >Xem hóa đơn dạng sách</button>
           <button
             id="btn-create-emergency-invoice"
-            onClick={() => setIsCreateOpen(true)}
+            onClick={() => { setDuplicateSource(null); setIsCreateOpen(true); }}
             className="flex w-full items-center justify-center gap-2 px-5 py-2.5 bg-[image:var(--image-gold-gradient)] text-white text-xs font-black rounded-2xl shadow-gold hover:opacity-90 transition-all active:scale-95 sm:w-auto"
           >
             <Plus className="w-4 h-4" />
@@ -256,6 +347,52 @@ export function EmergencyInvoiceBoard() {
         onReset={handleResetFilters}
       />
 
+      {/* Bulk action bar */}
+      {selectMode && (
+        <div className="sticky top-2 z-20 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-neutral-900 text-white rounded-2xl px-4 sm:px-6 py-3.5 shadow-lg">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleSelectAll}
+              className="flex items-center gap-2 text-xs font-bold text-white/90 hover:text-white transition-colors"
+            >
+              <span className={`h-4 w-4 rounded-md border-2 flex items-center justify-center
+          ${selectedIds.size === invoices.length && invoices.length > 0
+                  ? 'bg-indigo-500 border-indigo-500'
+                  : 'border-white/40'}`}
+              >
+                {selectedIds.size === invoices.length && invoices.length > 0 && (
+                  <span className="h-1.5 w-1.5 bg-white rounded-sm" />
+                )}
+              </span>
+              Chọn tất cả
+            </button>
+            <span className="text-xs text-white/60 font-semibold">
+              Đã chọn {selectedIds.size} / {invoices.length}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => { setSelectMode(false); setSelectedIds(new Set()); }}
+              className="px-4 py-2 text-xs font-bold text-white/80 hover:text-white transition-colors"
+            >
+              Hủy
+            </button>
+            <button
+              onClick={handleBulkDelete}
+              disabled={selectedIds.size === 0 || isBulkDeleting}
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-500 disabled:opacity-40 disabled:pointer-events-none text-xs font-black rounded-xl transition-all active:scale-95"
+            >
+              {isBulkDeleting ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Trash2 className="w-3.5 h-3.5" />
+              )}
+              Xóa đã chọn
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Board */}
       {loadingInvoices ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5">
@@ -277,7 +414,7 @@ export function EmergencyInvoiceBoard() {
             <p className="text-xs text-premium-muted mt-1">Nhấn "Hóa đơn mới" để tạo ngay</p>
           </div>
           <button
-            onClick={() => setIsCreateOpen(true)}
+            onClick={() => { setDuplicateSource(null); setIsCreateOpen(true); }}
             className="flex items-center gap-2 px-5 py-2.5 bg-[image:var(--image-gold-gradient)] text-white text-xs font-black rounded-2xl shadow-gold hover:opacity-90 transition-all"
           >
             <Plus className="w-4 h-4" />
@@ -295,6 +432,10 @@ export function EmergencyInvoiceBoard() {
               onView={handleView}
               onEdit={handleEdit}
               onPrint={handlePrint}
+              selectMode={selectMode}
+              isSelected={selectedIds.has(invoice.id)}
+              onToggleSelect={handleToggleSelect}
+              onDuplicate={handleDuplicate}
             />
           ))}
         </div>
@@ -334,9 +475,10 @@ export function EmergencyInvoiceBoard() {
       {/* Create Modal */}
       <CreateInvoiceModal
         isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
+        onClose={() => { setDuplicateSource(null); setIsCreateOpen(false); }}
         onSuccess={() => { }}
         onSubmit={handleCreate}
+        initialData={duplicateSource}
       />
 
       {/* Edit Modal */}

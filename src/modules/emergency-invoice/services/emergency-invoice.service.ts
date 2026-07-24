@@ -147,6 +147,20 @@ export class EmergencyInvoiceService {
     await emergencyInvoiceRepository.delete(id);
   }
 
+   async bulkDeleteInvoices(ids: string[]): Promise<{ deletedCount: number }> {
+    if (!Array.isArray(ids) || ids.length === 0) {
+      throw new Error('Danh sách ID không hợp lệ');
+    }
+
+    // Loại bỏ id trùng / rỗng
+    const uniqueIds = Array.from(new Set(ids.filter((id) => typeof id === 'string' && id.trim())));
+    if (uniqueIds.length === 0) {
+      throw new Error('Danh sách ID không hợp lệ');
+    }
+
+    const deletedCount = await emergencyInvoiceRepository.deleteMany(uniqueIds);
+    return { deletedCount };
+  }
   /**
    * Get summary stats (today / this week / this month).
    */

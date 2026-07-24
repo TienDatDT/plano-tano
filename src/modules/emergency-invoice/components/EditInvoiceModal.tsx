@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus, Trash2, X, Loader2, Edit3 } from 'lucide-react';
+import { Plus, Trash2, X, Loader2, Edit3, Calculator } from 'lucide-react';
 import { formatCurrency } from '@/shared/lib/formatters';
 import { updateEmergencyInvoiceSchema } from '../types/emergency-invoice.types';
 import type { UpdateEmergencyInvoiceInput, EmergencyInvoice } from '../types/emergency-invoice.types';
@@ -23,6 +23,8 @@ const getLocalDateTimeString = () => {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
 };
+
+import { QuickPriceCalculator } from './QuickPriceCalculator';
 const DISCOUNT_PRESETS = [0, 4, 8] as const;
 
 export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit }: Props) {
@@ -33,6 +35,53 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
   const [discountMode, setDiscountMode] = useState<'ITEM' | 'INVOICE'>('ITEM');
   const [invoiceDiscountPercent, setInvoiceDiscountPercent] = useState(0);
 
+  const [calcOpen, setCalcOpen] = useState<{ index: number; rect: DOMRect } | null>(null);
+  const bodyScrollRef = useRef<HTMLDivElement>(null);
+
+  const [priceInput, setPriceInput] = useState<Record<number, string>>({});
+
+  const formatPrice = (value: number) => {
+    if (!value) return "";
+    return new Intl.NumberFormat("vi-VN").format(value);
+  };
+
+  const parsePrice = (value: string) => {
+    // Xóa dấu chấm (phân cách hàng nghìn)
+    let raw = value.replace(/\./g, "");
+    // Đổi phẩy thành chấm để JS hiểu là số thập phân
+    raw = raw.replace(/,/g, ".");
+
+    if (!raw) return 0;
+
+    const number = Number(raw);
+
+    if (Number.isNaN(number)) return 0;
+
+    // nếu người dùng nhập dưới 1000 thì hiểu là nghìn (VD: 12,5 -> 12.5 -> 12500)
+    return number < 1000 ? number * 1000 : number;
+  };
+
+  // Đóng khi click ra ngoài popover
+  useEffect(() => {
+    if (!calcOpen) return;
+    const handleClickOutside = () => setCalcOpen(null);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [calcOpen]);
+
+  // Đóng khi cuộn hoặc resize
+  useEffect(() => {
+    if (!calcOpen) return;
+    const scrollEl = bodyScrollRef.current;
+    const close = () => setCalcOpen(null);
+    scrollEl?.addEventListener('scroll', close);
+    window.addEventListener('resize', close);
+    return () => {
+      scrollEl?.removeEventListener('scroll', close);
+      window.removeEventListener('resize', close);
+    };
+  }, [calcOpen]);
+
   const {
     register,
     control,
@@ -42,10 +91,10 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
     setValue,
     formState: { errors },
   } = useForm<
-  z.input<typeof updateEmergencyInvoiceSchema>,
-  any,
-  z.output<typeof updateEmergencyInvoiceSchema>
->({
+    z.input<typeof updateEmergencyInvoiceSchema>,
+    any,
+    z.output<typeof updateEmergencyInvoiceSchema>
+  >({
     resolver: zodResolver(updateEmergencyInvoiceSchema),
     defaultValues: {
       invoiceDate: '',
@@ -104,6 +153,7 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
       setBulkDiscountValue(0);
       setDiscountMode('ITEM');
       setInvoiceDiscountPercent(0);
+      setPriceInput({});
     }
   }, [isOpen, invoice, reset]);
 
@@ -114,24 +164,28 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
       callback: () =>
         append({ productName: '', quantity: 1, unitPrice: 0, discountPercent: 0 }),
     },
+    {
+      key: 'Escape',
+      callback: () => onClose(),
+    }
   ]);
 
   const handleFormSubmit = async (data: UpdateEmergencyInvoiceInput) => {
-  if (!invoice) return;
-  try {
-    setSubmitting(true);
-    await onSubmit(invoice.id, {
-      ...data,
-      invoiceDate: data.invoiceDate
-        ? new Date(data.invoiceDate).toISOString()
-        : data.invoiceDate,
-    });
-    onSuccess();
-    onClose();
-  } finally {
-    setSubmitting(false);
-  }
-};
+    if (!invoice) return;
+    try {
+      setSubmitting(true);
+      await onSubmit(invoice.id, {
+        ...data,
+        invoiceDate: data.invoiceDate
+          ? new Date(data.invoiceDate).toISOString()
+          : data.invoiceDate,
+      });
+      onSuccess();
+      onClose();
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handlePresetClick = (fieldId: string, index: number, value: number) => {
     setCustomDiscountRows((prev) => ({ ...prev, [fieldId]: false }));
@@ -419,6 +473,7 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
                           <input
                             {...register(`items.${index}.productName`)}
                             type="text"
+                            autoFocus={index === 0}
                             placeholder="Tên sản phẩm..."
                             className="w-full h-9 px-3 border border-premium-border rounded-xl text-xs font-semibold text-neutral-800 placeholder-premium-muted focus:outline-none focus:ring-1 focus:ring-premium-primary transition-all"
                           />
@@ -455,18 +510,96 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
                           />
                         </div>
 
-                        <div className="md:col-span-2">
+                        <div className="md:col-span-2 relative">
                           <label className="mb-1 block text-[9px] font-bold text-premium-muted uppercase tracking-wider md:hidden">
                             Đơn giá (₫)
                           </label>
-                          <input
-                            {...register(`items.${index}.unitPrice`, { valueAsNumber: true })}
-                            type="number"
-                            min={0}
-                            step={500}
-                            placeholder="0"
-                            className="w-full h-9 px-3 border border-premium-border rounded-xl text-xs font-bold text-neutral-800 focus:outline-none focus:ring-1 focus:ring-premium-primary transition-all"
-                          />
+                          <div className="flex items-center gap-1">
+                            <input
+                              {...register(`items.${index}.unitPrice`)}
+                              type="text"
+                              inputMode='numeric'
+                              value={
+                                priceInput[index] ??
+                                formatPrice(watch(`items.${index}.unitPrice`) || 0)
+                              }
+                              onFocus={() => {
+                                const price = watch(`items.${index}.unitPrice`);
+
+                                setPriceInput(prev => ({
+                                  ...prev,
+                                  [index]:
+                                    price > 0
+                                      ? String(Math.floor(price / 1000))
+                                      : "",
+                                }));
+                              }}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^\d,.]/g, "");
+
+                                setPriceInput(prev => ({
+                                  ...prev,
+                                  [index]: value,
+                                }));
+                              }}
+                              onBlur={(e) => {
+                                const parsed = parsePrice(e.target.value);
+                                setValue(
+                                  `items.${index}.unitPrice`,
+                                  parsed,
+                                  {
+                                    shouldValidate: true,
+                                    shouldDirty: true,
+                                  }
+                                );
+
+                                setPriceInput(prev => {
+                                  const next = { ...prev };
+                                  delete next[index];
+                                  return next;
+                                });
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+
+                                  e.currentTarget.blur();
+                                }
+                              }}
+                              min={0}
+                              step={500}
+                              placeholder="0"
+                              onDoubleClick={(e) =>
+                                setCalcOpen({ index, rect: e.currentTarget.getBoundingClientRect() })
+                              }
+                              className="w-full h-9 px-3 border border-premium-border rounded-xl text-xs font-bold text-neutral-800 focus:outline-none focus:ring-1 focus:ring-premium-primary transition-all"
+                            />
+                            <button
+                              type="button"
+                              onClick={(e) =>
+                                setCalcOpen({ index, rect: e.currentTarget.getBoundingClientRect() })
+                              }
+                              title="Máy tính cộng dồn (nhấn đúp vào ô giá cũng mở được)"
+                              className="h-9 w-9 shrink-0 flex items-center justify-center rounded-xl border border-premium-border text-neutral-400 hover:text-premium-primary hover:border-premium-primary/40 transition-all"
+                            >
+                              <Calculator className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          {calcOpen?.index === index && (
+                            <QuickPriceCalculator
+                              anchorRect={calcOpen.rect}
+                              onApply={(total) => {
+                                setValue(`items.${index}.unitPrice`, total, { shouldValidate: true });
+                                setPriceInput((prev) => {
+                                  const next = { ...prev };
+                                  delete next[index];
+                                  return next;
+                                });
+                              }}
+                              onClose={() => setCalcOpen(null)}
+                            />
+                          )}
                         </div>
                       </div>
 

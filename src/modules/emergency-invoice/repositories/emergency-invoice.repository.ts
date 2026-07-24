@@ -203,6 +203,12 @@ export class EmergencyInvoiceRepository {
   async delete(id: string): Promise<void> {
     await prisma.emergencyInvoice.delete({ where: { id } });
   }
+  async deleteMany(ids: string[]): Promise<number> {
+    const result = await prisma.emergencyInvoice.deleteMany({
+      where: { id: { in: ids } },
+    });
+    return result.count;
+  }
 
   /**
    * Aggregate total revenue and count for summary stats

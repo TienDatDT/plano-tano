@@ -31,7 +31,7 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
   return (
     <div
       ref={ref}
-      style={{ width: 272 }} // 80mm - 2x5mm margin = 70mm ≈ 265px → 272px
+      style={{ width: 302 }} // tăng nhẹ để chứa chữ to hơn (80mm - margin, ~302px)
       className="bg-white text-black"
     >
       <style type="text/css" media="print">
@@ -43,40 +43,40 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
 
       {/* ── HEADER ── */}
       <div className="flex flex-col items-center mb-4 border-b-2 border-black pb-3">
-        <h1 className="text-xl font-black uppercase tracking-widest text-center mb-1 text-black">
+        <h1 className="text-2xl font-black uppercase tracking-widest text-center mb-1 text-black">
           Nhà sách Kim Ngân
         </h1>
-        <p className="text-black text-xs text-center leading-snug font-medium">
+        <p className="text-black text-sm text-center leading-snug font-medium">
           Chuyên cung cấp văn phòng phẩm, sách giáo khoa, dụng cụ học tập...
         </p>
-        <p className="text-black text-xs text-center mt-0.5 font-medium">
+        <p className="text-black text-sm text-center mt-0.5 font-medium">
           Địa chỉ: 242 Ấp Thị 1, xã Long Điền, tỉnh An Giang.
         </p>
-        <p className="text-black text-xs text-center font-medium">
+        <p className="text-black text-sm text-center font-medium">
           SĐT/ Zalo : 0397 169 935
         </p>
       </div>
 
       {/* ── TITLE ── */}
       <div className="text-center mb-4">
-        <h2 className="text-lg font-bold uppercase tracking-wider mb-1 text-black">
+        <h2 className="text-xl font-bold uppercase tracking-wider mb-1 text-black">
           Hóa Đơn Bán Hàng
         </h2>
-        <p className="text-sm font-bold text-black">Mã: {invoice.invoiceCode}</p>
-        <p className="text-xs text-black font-medium mt-0.5">Ngày: {formattedDate}</p>
+        <p className="text-base font-bold text-black">Mã: {invoice.invoiceCode}</p>
+        <p className="text-sm text-black font-medium mt-0.5">Ngày: {formattedDate}</p>
       </div>
 
       {/* ── ITEMS TABLE ── */}
       <table className="w-full text-left border-collapse mb-4">
         <thead>
           <tr className="border-y-2 border-black">
-            <th className="py-1.5 pr-1 w-6 text-center font-bold text-xs text-black">#</th>
-            <th className="py-1.5 px-1 font-bold text-xs text-black">Sản phẩm</th>
+            <th className="py-1.5 pr-1 w-6 text-center font-bold text-sm text-black">#</th>
+            <th className="py-1.5 px-1 font-bold text-sm text-black">Sản phẩm</th>
             <th className="py-1.5 px-1 w-8 text-center font-bold text-xs text-black">SL</th>
             {hasDiscount && (
               <th className="py-1.5 px-1 w-10 text-center font-bold text-xs text-black">CK</th>
             )}
-            <th className="py-1.5 pl-1 w-20 text-right font-bold text-xs text-black">T.Tiền</th>
+            <th className="py-1.5 pl-1 w-20 text-right font-bold text-sm text-black">T.Tiền</th>
           </tr>
         </thead>
         <tbody>
@@ -88,15 +88,15 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
 
             return (
               <tr key={item.id} className="border-b border-gray-700">
-                <td className="py-2 pr-1 text-center text-black text-xs font-medium">{index + 1}</td>
-                <td className="py-2 px-1 text-xs leading-snug">
+                <td className="py-2 pr-1 text-center text-black text-sm font-medium">{index + 1}</td>
+                <td className="py-2 px-1 text-sm leading-snug">
                   <div className="font-bold text-black">{item.productName}</div>
                   {/* Đơn giá xuống dòng cho gọn trên khổ 80mm */}
                   <div className="text-black text-xs font-medium">
                     {new Intl.NumberFormat('vi-VN').format(Number(item.unitPrice))} x {item.quantity}
                   </div>
                 </td>
-                <td className="py-2 px-1 text-center text-xs font-bold text-black">{item.quantity}</td>
+                <td className="py-2 px-1 text-center text-sm font-bold text-black">{item.quantity}</td>
                 {hasDiscount && (
                   <td className="py-2 px-1 text-center">
                     {discountPercent > 0 ? (
@@ -108,7 +108,7 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
                     )}
                   </td>
                 )}
-                <td className="py-2 pl-1 text-right font-bold text-xs text-black">
+                <td className="py-2 pl-1 text-right font-bold text-sm text-black">
                   {discountPercent > 0 && (
                     <div className="text-black line-through font-medium text-xs mb-0.5">
                       {new Intl.NumberFormat('vi-VN').format(originalPrice)}
@@ -127,8 +127,8 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
 
         {(hasDiscount || hasInvoiceDiscount) && (
           <div className="flex justify-between w-full">
-            <span className="text-black text-xs font-medium">Tạm tính:</span>
-            <span className="text-black text-xs font-bold">
+            <span className="text-black text-sm font-medium">Tạm tính:</span>
+            <span className="text-black text-sm font-bold">
               {new Intl.NumberFormat('vi-VN').format(subTotal)} ₫
             </span>
           </div>
@@ -136,8 +136,8 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
 
         {hasDiscount && totalDiscount > 0 && (
           <div className="flex justify-between w-full">
-            <span className="text-black text-xs font-medium">Chiết khấu:</span>
-            <span className="text-xs font-bold text-black">
+            <span className="text-black text-sm font-medium">Chiết khấu:</span>
+            <span className="text-sm font-bold text-black">
               -{new Intl.NumberFormat('vi-VN').format(totalDiscount)} ₫
             </span>
           </div>
@@ -145,14 +145,14 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
 
         {hasInvoiceDiscount && (
           <div className="flex justify-between w-full">
-            <span className="text-black text-xs font-medium">
+            <span className="text-black text-sm font-medium">
               Chiết khấu HĐ
               {(() => {
                 const pct = Math.round((totalDiscount / subTotal) * 100 * 10) / 10;
                 return pct > 0 ? ` (${pct}%)` : '';
               })()}:
             </span>
-            <span className="text-xs font-bold text-black">
+            <span className="text-sm font-bold text-black">
               -{new Intl.NumberFormat('vi-VN').format(totalDiscount)} ₫
             </span>
           </div>
@@ -163,14 +163,14 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
         )}
 
         <div className="flex justify-between w-full items-baseline">
-          <span className="font-bold uppercase text-sm tracking-wide text-black">Tổng cộng:</span>
-          <span className="font-black text-2xl text-black">
+          <span className="font-bold uppercase text-base tracking-wide text-black">Tổng cộng:</span>
+          <span className="font-black text-3xl text-black">
             {formatCurrency(Number(invoice.totalAmount), 'vi')}
           </span>
         </div>
 
         {invoice.note && (
-          <div className="w-full mt-1 text-xs italic text-black font-medium border-t border-gray-700 pt-2">
+          <div className="w-full mt-1 text-base italic text-black font-medium border-t border-gray-700 pt-2">
             Ghi chú: {invoice.note}
           </div>
         )}
@@ -178,8 +178,8 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
 
       {/* ── FOOTER ── */}
       <div className="text-center mt-6 pt-4 border-t border-black">
-        <p className="font-bold text-sm mb-1 text-black">Cảm ơn quý khách!</p>
-        <p className="text-black text-xs font-medium">Hẹn gặp lại</p>
+        <p className="font-bold text-base mb-1 text-black">Cảm ơn quý khách!</p>
+        <p className="text-black text-sm font-medium">Hẹn gặp lại</p>
       </div>
     </div>
   );
