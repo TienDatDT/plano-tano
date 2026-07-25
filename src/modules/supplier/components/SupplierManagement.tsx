@@ -12,6 +12,7 @@ import { supplierApi } from "@/modules/supplier/api/supplier.api";
 import { useSelection } from "@/shared/hooks/use-selection";
 import { useBulkDelete } from "@/shared/hooks/use-bulk-delete";
 import type { SupplierRow, SupplierFormValues, SupplierStatus } from "../types/supplier.types";
+import { useTranslation } from "react-i18next";
 
 export function SupplierManagement() {
   const notify = useNotify();
@@ -26,6 +27,7 @@ export function SupplierManagement() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<SupplierStatus | "all">("all");
   const [page, setPage] = useState(1);
+  const { t } = useTranslation();
   const pageSize = 10;
 
   const activeFiltersCount = (search ? 1 : 0) + (status !== "all" ? 1 : 0);
@@ -56,15 +58,15 @@ export function SupplierManagement() {
     return suppliers.filter((s) => {
       // 1. Search Filter
       const q = search.toLowerCase().trim();
-      const matchesSearch = !q || 
+      const matchesSearch = !q ||
         s.name.toLowerCase().includes(q) ||
         s.contact.toLowerCase().includes(q) ||
         s.email.toLowerCase().includes(q) ||
         s.phone.toLowerCase().includes(q);
-      
+
       // 2. Status Filter (Advanced)
       const matchesStatus = status === "all" || s.status === status;
-      
+
       return matchesSearch && matchesStatus;
     });
   }, [suppliers, search, status]);
@@ -91,7 +93,7 @@ export function SupplierManagement() {
     onSuccess: (deletedIds) => {
       setSuppliers((prev) => prev.filter((s) => !deletedIds.includes(s.id)));
       selection.clearSelection();
-      
+
       // If we deleted everything on this page, and there's a previous page, go back
       if (page > 1 && deletedIds.length === paginatedSuppliers.length) {
         setPage(page - 1);
@@ -198,9 +200,9 @@ export function SupplierManagement() {
     <div className="flex min-h-screen flex-col bg-premium-bg p-6 lg:p-10">
       <div className="mx-auto w-full max-w-7xl space-y-8">
         {/* Simple Search Header */}
-        <SupplierHeader 
-          total={suppliers.length} 
-          onAdd={handleAdd} 
+        <SupplierHeader
+          total={suppliers.length}
+          onAdd={handleAdd}
           search={search}
           onSearchChange={handleSearchChange}
         />
@@ -235,16 +237,18 @@ export function SupplierManagement() {
           {!loading && totalPages > 1 && (
             <div className="flex items-center justify-between border-t border-premium-border pt-6">
               <p className="text-xs font-medium text-premium-muted">
-                {"Showing"}<span className="text-neutral-900">{(page - 1) * pageSize + 1}</span> {"to"}{" "}
-                <span className="text-neutral-900">{Math.min(page * pageSize, filteredSuppliers.length)}</span> {"of"}{" "}
-                <span className="text-neutral-900">{filteredSuppliers.length}</span> {"results"}</p>
+                {t("common.showing")}<span className="text-neutral-900">{(page - 1) * pageSize + 1}</span> {" "}
+                {t("common.to")}{" "}
+                <span className="text-neutral-900">{Math.min(page * pageSize, filteredSuppliers.length)}</span> {" "}
+                {t("common.of")}{" "}
+                <span className="text-neutral-900">{filteredSuppliers.length}</span> {t("common.results")}</p>
               <div className="flex items-center gap-2">
                 <button
                   disabled={page === 1}
                   onClick={() => setPage(page - 1)}
                   className="rounded-lg border border-premium-border px-3 py-1.5 text-xs font-bold text-premium-muted transition-all hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent"
                 >
-                  {"Previous"}</button>
+                  {t("common.previous")}</button>
                 {Array.from({ length: totalPages }).map((_, i) => (
                   <button
                     key={i + 1}
@@ -264,7 +268,7 @@ export function SupplierManagement() {
                   onClick={() => setPage(page + 1)}
                   className="rounded-lg border border-premium-border px-3 py-1.5 text-xs font-bold text-premium-muted transition-all hover:bg-white disabled:opacity-30 disabled:hover:bg-transparent"
                 >
-                  {"Next"}</button>
+                  {t("common.next")}</button>
               </div>
             </div>
           )}

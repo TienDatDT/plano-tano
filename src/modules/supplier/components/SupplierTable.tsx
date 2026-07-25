@@ -4,6 +4,7 @@ import { Edit2, Trash2, Truck, Calendar, Phone, AlertCircle, ArrowUpDown } from 
 import type { SupplierRow } from "../types/supplier.types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { useTranslation } from "react-i18next";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -45,6 +46,7 @@ export function SupplierTable({
   isAllSelected = false,
   isIndeterminate = false,
 }: SupplierTableProps) {
+  const {t}= useTranslation();
   
   // --- SUB-COMPONENTS FOR CLEANER CODE ---
   
@@ -102,13 +104,13 @@ export function SupplierTable({
                   </div>
                 </th>
               )}
-              <TableHeader label={"Supplier Name"} sortable />
-              <TableHeader label={"Contact Info"} hideOnMobile />
-              <TableHeader label={"Phone"} hideOnMobile />
-              <TableHeader label={"Status"} />
-              <TableHeader label={"Created"} hideOnMobile className="md:table-cell" />
+              <TableHeader label={t("supplierTable.supplierName")} sortable />
+              <TableHeader label={t("supplierTable.contactInfo")} hideOnMobile />
+              <TableHeader label={t("supplierTable.phone")} hideOnMobile />
+              <TableHeader label={t("supplierTable.status")} />
+              <TableHeader label={t("supplierTable.created")} hideOnMobile className="md:table-cell" />
               <th className="px-6 py-4 pr-8 text-right text-[10px] font-bold uppercase tracking-wider text-premium-muted/80">
-                {"Actions"}</th>
+                {t("supplierTable.actions")}</th>
             </tr>
           </thead>
           
@@ -158,15 +160,15 @@ export function SupplierTable({
                     <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-premium-bg text-premium-primary/40 ring-[12px] ring-premium-bg/40">
                       <Truck size={48} strokeWidth={1.2} />
                     </div>
-                    <h3 className="text-xl font-bold text-neutral-900">{"No results found"}</h3>
+                    <h3 className="text-xl font-bold text-neutral-900">{t("supplierTable.noResults")}</h3>
                     <p className="mt-2 max-w-[320px] text-sm font-medium leading-relaxed text-premium-muted">
-                      {"Your search or filters didn't match any suppliers. Try broadening your criteria."}</p>
+                      {t("supplierTable.noResultsDescription")}</p>
                     {onReset && (
                       <button
                         onClick={onReset}
                         className="mt-8 px-6 py-2.5 bg-premium-primary text-white rounded-xl text-sm font-bold shadow-soft hover:bg-premium-primary/90 transition-all active:scale-95"
                       >
-                        {"Reset all filters"}</button>
+                        {t("supplierTable.resetFilters")}</button>
                     )}
                   </div>
                 </td>
@@ -208,7 +210,7 @@ export function SupplierTable({
                               // Using nativeEvent.shiftKey here since React Synthetic event might not capture it well inside onChange sometimes
                               onToggleSelection(supplier.id, (e.nativeEvent as any).shiftKey);
                             }}
-                            title={!canSelect ? "Cannot select this supplier (likely has active orders)" : ""}
+                            title={!canSelect ? t("supplierTable.cannotSelect") : ""}
                             className="h-4 w-4 cursor-pointer rounded-md border-premium-border text-premium-primary transition-all focus:ring-premium-primary focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                           />
                         </div>
@@ -279,14 +281,14 @@ export function SupplierTable({
                       <button
                         onClick={() => onEdit(supplier)}
                         className="rounded-xl p-2.5 text-premium-muted transition-all hover:bg-white hover:text-premium-primary hover:shadow-sm"
-                        title={"Edit Supplier"}
+                        title={t("supplierTable.editSupplier")}
                       >
                         <Edit2 className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => onDelete(supplier.id)}
                         className="rounded-xl p-2.5 text-premium-muted transition-all hover:bg-red-50 hover:text-red-500 hover:shadow-sm"
-                        title={"Delete Supplier"}
+                        title={t("supplierTable.deleteSupplier")}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>

@@ -2,6 +2,7 @@
 
 import { Trash2, X } from "lucide-react";
 import { Button } from "@/shared/components/ui/Button";
+import { useTranslation } from "react-i18next";
 
 interface BulkActionBarProps {
   count: number;
@@ -16,6 +17,7 @@ export function BulkActionBar({
   onDelete,
   isDeleting,
 }: BulkActionBarProps) {
+  const {t} = useTranslation();
   if (count === 0) return null;
 
   return (
@@ -25,7 +27,7 @@ export function BulkActionBar({
           {count}
         </span>
         <span className="text-sm font-bold text-neutral-800">
-          {"Supplier"}{count > 1 ? "s" : ""} {"selected"}</span>
+          {t("supplier.bulkActionBar.supplier")}{count > 1 ? t("supplier.bulkActionBar.supplierPlural") : ""} {t("supplier.bulkActionBar.selected")}</span>
       </div>
 
       <div className="flex items-center gap-2">
@@ -37,7 +39,7 @@ export function BulkActionBar({
           className="h-8 text-xs text-premium-muted hover:text-neutral-900"
         >
           <X className="mr-1.5 h-3.5 w-3.5" />
-          {"Clear"}</Button>
+          {t("supplier.bulkActionBar.clear")}</Button>
         <Button
           variant="destructive"
           size="sm"
@@ -46,7 +48,7 @@ export function BulkActionBar({
           className="h-8 px-4 text-xs shadow-none hover:shadow-soft"
         >
           {!isDeleting && <Trash2 className="mr-1.5 h-3.5 w-3.5" />}
-          {"Delete Selected"}</Button>
+          {t("supplier.bulkActionBar.deleteSelected")}</Button>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-
 {
   "nav": {
     "dashboard": "Tổng quan",
@@ -30,52 +29,43 @@
     "vitalStatistics": "Thống kê quan trọng",
     "dateRange": "Khoảng thời gian",
     "today": "Hôm nay",
-
     "salesRevenuePerformance": "Hiệu suất Bán hàng & Doanh thu",
     "operationsRetailIntelligence": "Vận hành & Phân tích Bán lẻ",
     "inventoryAssetStockHealth": "Tài sản tồn kho & Tình trạng hàng hóa",
-
     "performanceInsights": "Phân tích hiệu suất",
     "rapidOperations": "Thao tác nhanh",
-
     "ordersOverTime": "Đơn hàng theo thời gian",
     "ordersOverTimeDescription": "Theo dõi số lượng đơn hàng và doanh thu",
-
     "stockTrend": "Xu hướng tồn kho",
     "stockTrendDescription": "Theo dõi tình trạng tồn kho theo từng khu vực",
-
     "inventoryTurnoverUnit": "lần",
-
     "na": "N/A",
-
     "healthy": "Tốt",
     "warning": "Cảnh báo",
     "critical": "Nguy hiểm",
-
     "healthyThreshold": "Tốt (≥ 80%)",
     "warningThreshold": "Cảnh báo (65% - 80%)",
     "criticalThreshold": "Nguy hiểm (< 65%)"
   },
-   "common": {
+  "common": {
     "noProducts": "Chưa có dữ liệu",
-
     "daily": "Hằng ngày",
     "weekly": "Hằng tuần",
     "monthly": "Hằng tháng",
-
     "today": "Hôm nay",
-
     "loading": "Đang tải...",
     "empty": "Không có dữ liệu",
-
     "yes": "Có",
     "no": "Không",
-
     "all": "Tất cả",
-
     "unknown": "Không xác định",
-
-    "notAvailable": "N/A"
+    "notAvailable": "N/A",
+    "showing": "Hiển thị",
+    "to": "đến",
+    "of": "trên tổng",
+    "results": "kết quả",
+    "previous": "Trước",
+    "next": "Tiếp"
   },
   "salesRevenue": {
     "title": "Hiệu suất Bán hàng & Doanh thu",
@@ -133,19 +123,18 @@
     "stockInDescription": "Nhận hàng từ nhà cung cấp",
     "createOrder": "Tạo đơn hàng",
     "createOrderDescription": "Bắt đầu phiên bán hàng mới"
-  } ,
+  },
   "products": {
     "title": "Sản phẩm",
     "subtitle": "Quản lý sản phẩm và theo dõi hiệu suất",
-
     "totalProducts": "Tổng sản phẩm",
     "totalStock": "Tổng tồn kho",
-
     "searchPlaceholder": "Tìm kiếm sản phẩm...",
-
     "addProduct": "Thêm sản phẩm",
     "filter": "Bộ lọc",
-
+    "newProduct": "Thêm sản phẩm",
+    "editProduct": "Chỉnh sửa sản phẩm",
+    "description": "Mô tả",
     "table": {
       "productName": "Tên sản phẩm",
       "category": "Danh mục",
@@ -154,19 +143,93 @@
       "status": "Trạng thái",
       "actions": "Thao tác"
     },
-
     "manageSkus": "Quản lý SKU",
-
     "empty": {
       "title": "Chưa có sản phẩm",
       "description": "Hãy thêm sản phẩm đầu tiên của bạn."
     }
   },
-
   "productStatus": {
     "active": "Đang hoạt động",
     "inactive": "Ngừng hoạt động",
     "draft": "Bản nháp",
     "archived": "Đã lưu trữ"
+  },
+  "supplier": {
+    "bulkActionBar": {
+      "selected": "được chọn",
+      "clear": "Bỏ chọn",
+      "deleteSelected": "Xóa đã chọn",
+      "supplier": "Nhà cung cấp",
+      "supplierPlural": "Nhà cung cấp"
+    },
+    "supplierDrawer": {
+      "newTitle": "Thêm nhà cung cấp",
+      "editTitle": "Chỉnh sửa nhà cung cấp",
+      "newDescription": "Thêm một nhà cung cấp mới vào danh sách",
+      "editDescription": "Chỉnh sửa thông tin nhà cung cấp hiện có",
+      "closePanel": "Đóng cửa sổ",
+      "deleteSupplier": "Xóa nhà cung cấp",
+      "aria": {
+        "new": "Thêm nhà cung cấp",
+        "edit": "Chỉnh sửa nhà cung cấp"
+      }
+    },
+    "supplierFilters": {
+      "searchPlaceholder": "Tìm kiếm nhà cung cấp theo tên, người liên hệ, email...",
+      "status": "Trạng thái nhà cung cấp",
+      "allStatus": "Tất cả trạng thái",
+      "activeOnly": "Đang hoạt động",
+      "inactiveOnly": "Ngừng hoạt động",
+      "region": "Khu vực (Demo)",
+      "domestic": "Trong nước",
+      "international": "Quốc tế",
+      "activeFilters": "Bộ lọc đang áp dụng:",
+      "search": "Tìm kiếm:",
+      "statusLabel": "Trạng thái:",
+      "clearAll": "Xóa tất cả"
+    },
+    "supplierForm": {
+      "name": "Tên nhà cung cấp",
+      "namePlaceholder": "Ví dụ: Aurora Desk Supply",
+      "nameRequired": "Tên nhà cung cấp là bắt buộc",
+      "primaryContact": "Người liên hệ chính",
+      "contactPlaceholder": "Họ và tên",
+      "email": "Email",
+      "emailPlaceholder": "orders@supplier.com",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "+84 ...",
+      "status": "Trạng thái",
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng hoạt động",
+      "quickTip": "Mẹo nhanh",
+      "quickTipDescription": "Luôn cập nhật thông tin liên hệ của nhà cung cấp để việc nhập hàng và đặt hàng lại diễn ra thuận lợi.",
+      "cancel": "Hủy",
+      "saveChanges": "Lưu thay đổi",
+      "createSupplier": "Tạo nhà cung cấp"
+    },
+    "supplierHeader": {
+      "title": "Quản lý nhà cung cấp",
+      "subtitle": "Quản lý đối tác cung cấp hàng hóa cho nhập kho và sắp xếp kệ",
+      "totalSuppliers": "Tổng nhà cung cấp",
+      "addSupplier": "Thêm nhà cung cấp",
+      "searchPlaceholder": "Tìm kiếm nhà cung cấp..."
+    },
+    "supplierTable": {
+      "supplierName": "Tên nhà cung cấp",
+      "contactInfo": "Thông tin liên hệ",
+      "phone": "Số điện thoại",
+      "status": "Trạng thái",
+      "created": "Ngày tạo",
+      "actions": "Thao tác",
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng hoạt động",
+      "noResults": "Không tìm thấy kết quả",
+      "noResultsDescription": "Không có nhà cung cấp nào phù hợp với từ khóa hoặc bộ lọc hiện tại. Hãy thử mở rộng điều kiện tìm kiếm.",
+      "resetFilters": "Đặt lại bộ lọc",
+      "editSupplier": "Chỉnh sửa nhà cung cấp",
+      "deleteSupplier": "Xóa nhà cung cấp",
+      "cannotSelect": "Không thể chọn nhà cung cấp này (có thể đang có đơn hàng đang hoạt động)"
+    }
   }
 }

@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { Save, AlertCircle } from "lucide-react";
 import type { SupplierFormValues } from "../types/supplier.types";
+import { useTranslation } from "react-i18next";
 
 interface SupplierFormProps {
   initialData?: Partial<SupplierFormValues>;
@@ -34,7 +35,7 @@ export function SupplierForm({
       ...initialData,
     },
   });
-
+  const { t } = useTranslation();
   const statusValue = watch("status");
 
   const handleFormSubmit = async (data: SupplierFormValues) => {
@@ -51,16 +52,16 @@ export function SupplierForm({
             htmlFor="sup-name"
             className="flex items-center gap-1.5 text-sm font-bold text-neutral-800"
           >
-            {"Supplier Name"}<span className="text-red-500">*</span>
+            {t("supplierForm.name")}<span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <input
               id="sup-name"
-              {...register("name", { required: "Supplier name is required" })}
-              placeholder={"e.g. Aurora Desk Supply"}
+              {...register("name", { required: t("supplierForm.nameRequired") })}
+              placeholder={t("supplierForm.namePlaceholder")}
               className={`w-full rounded-xl bg-premium-bg/50 px-4 py-3 text-sm font-medium transition-all focus:bg-white focus:outline-none focus:ring-2 border ${errors.name
-                  ? "border-red-300 bg-red-50 ring-red-200"
-                  : "border-premium-border ring-premium-primary/20"
+                ? "border-red-300 bg-red-50 ring-red-200"
+                : "border-premium-border ring-premium-primary/20"
                 }`}
             />
             {errors.name && (
@@ -78,11 +79,11 @@ export function SupplierForm({
             htmlFor="sup-contact"
             className="text-sm font-bold text-neutral-800"
           >
-            {"Primary Contact"}</label>
+            {t("supplierForm.primaryContact")}</label>
           <input
             id="sup-contact"
             {...register("contact")}
-            placeholder={"Full name"}
+            placeholder={t("supplierForm.contactPlaceholder")}
             className="w-full rounded-xl border border-premium-border bg-premium-bg/50 px-4 py-3 text-sm font-medium transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-premium-primary/20"
           />
         </div>
@@ -93,12 +94,12 @@ export function SupplierForm({
             htmlFor="sup-email"
             className="text-sm font-bold text-neutral-800"
           >
-            {"Email"}</label>
+            {t("supplierForm.email")}</label>
           <input
             id="sup-email"
             type="email"
             {...register("email")}
-            placeholder={"orders@supplier.com"}
+            placeholder={t("supplierForm.emailPlaceholder")}
             className="w-full rounded-xl border border-premium-border bg-premium-bg/50 px-4 py-3 text-sm font-medium transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-premium-primary/20"
           />
         </div>
@@ -109,29 +110,29 @@ export function SupplierForm({
             htmlFor="sup-phone"
             className="text-sm font-bold text-neutral-800"
           >
-            {"Phone"}</label>
+            {t("supplierForm.phone")}</label>
           <input
             id="sup-phone"
             {...register("phone")}
-            placeholder="+1 …"
+            placeholder={t("supplierForm.phonePlaceholder")}
             className="w-full rounded-xl border border-premium-border bg-premium-bg/50 px-4 py-3 text-sm font-medium transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-premium-primary/20"
           />
         </div>
 
         {/* Status toggle */}
         <div className="space-y-2">
-          <span className="text-sm font-bold text-neutral-800">{"Status"}</span>
+          <span className="text-sm font-bold text-neutral-800">{t("supplierForm.status")}</span>
           <div className="flex gap-2">
             {([true, false] as const).map((s) => (
               <button
                 type="button"
                 onClick={() => setValue("status", s)}
                 className={`flex-1 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all ${statusValue === s
-                    ? "border-premium-primary bg-[#e8f4ee] text-[#3d6b55]"
-                    : "border-premium-border bg-premium-bg/50 text-premium-muted hover:border-premium-secondary"
+                  ? "border-premium-primary bg-[#e8f4ee] text-[#3d6b55]"
+                  : "border-premium-border bg-premium-bg/50 text-premium-muted hover:border-premium-secondary"
                   }`}
               >
-                {s === true ? "Active" : "Inactive"}
+                {s === true ? t("supplierForm.active") : t("supplierForm.inactive")}
               </button>
             ))}
           </div>
@@ -141,9 +142,9 @@ export function SupplierForm({
         <div className="rounded-xl bg-premium-subtle/50 p-4 ring-1 ring-premium-border/50">
           <h4 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-premium-primary">
             <AlertCircle className="h-3.5 w-3.5" />
-            {"Quick Tip"}</h4>
+            {t("supplierForm.quickTip")}</h4>
           <p className="mt-2 text-xs font-medium leading-relaxed text-premium-muted">
-            {"Keep supplier contacts up-to-date for seamless stock-in and reorder workflows."}</p>
+            {t("supplierForm.quickTipDescription")}</p>
         </div>
       </div>
 
@@ -154,7 +155,7 @@ export function SupplierForm({
           onClick={onCancel}
           className="flex-1 rounded-xl bg-white px-4 py-3 text-sm font-bold text-premium-muted shadow-sm ring-1 ring-premium-border transition-all hover:bg-neutral-50 active:scale-[0.98]"
         >
-          {"Cancel"}</button>
+          {t("supplierForm.cancel")}</button>
         <button
           type="submit"
           disabled={isSubmitting}
@@ -165,7 +166,7 @@ export function SupplierForm({
           ) : (
             <Save className="h-4 w-4" />
           )}
-          <span>{initialData?.name ? "Save Changes" : "Create Supplier"}</span>
+          <span>{initialData?.name ? t("supplierForm.saveChanges") : t("supplierForm.createSupplier")}</span>
         </button>
       </div>
     </form>

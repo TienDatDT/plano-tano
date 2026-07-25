@@ -193,9 +193,15 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit, initi
   useKeyboardShortcut([
     {
       key: 'Enter',
-      ctrl: true,
+      shift: true,
       callback: () =>
         append({ productName: '', quantity: 1, unitPrice: 0, discountPercent: 0 }),
+    },
+    {
+      key: 'Enter',
+      ctrl: true,
+      callback: () =>
+        handleSubmit(handleFormSubmit)(),
     },
     {
       key: 'Escape',

@@ -3,7 +3,6 @@
 import { Package, ChevronsUpDown } from "lucide-react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/shared/components/ui/Table";
 import type { ProductJson } from "@/modules/product/lib/serializeProduct";
-import { useTranslation } from "@/shared/lib/i18n/client";
 
 interface ProductTableProps {
   products: ProductJson[];

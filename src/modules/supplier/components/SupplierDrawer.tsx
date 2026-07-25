@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { X, Trash2, Truck } from "lucide-react";
 import { SupplierForm } from "./SupplierForm";
 import type { SupplierRow, SupplierFormValues } from "../types/supplier.types";
+import { useTranslation } from "react-i18next";
 
 interface SupplierDrawerProps {
   isOpen: boolean;
@@ -23,7 +24,7 @@ export function SupplierDrawer({
   isSubmitting,
 }: SupplierDrawerProps) {
   const [mounted, setMounted] = useState(false);
-
+  const { t } = useTranslation();
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -87,7 +88,7 @@ export function SupplierDrawer({
             <button
               onClick={onClose}
               className="absolute right-4 top-4 rounded-full p-2 text-premium-muted transition-all hover:bg-premium-subtle hover:text-neutral-900"
-              aria-label="Close panel"
+              aria-label={t("supplierDrawer.closePanel")}
             >
               <X className="h-5 w-5" />
             </button>
@@ -98,12 +99,12 @@ export function SupplierDrawer({
               </div>
               <div className="flex-1 min-w-0">
                 <h2 className="text-xl font-bold text-neutral-900">
-                  {supplier ? "Edit Supplier" : "New Supplier"}
+                  {supplier ? t("supplierDrawer.editTitle") : t("supplierDrawer.newTitle")}
                 </h2>
                 <p className="text-sm font-medium text-premium-muted">
                   {supplier
-                    ? "Modify existing supplier details"
-                    : "Add a new source partner to your directory"}
+                    ? t("supplierDrawer.editDescription")
+                    : t("supplierDrawer.newDescription")}
                 </p>
               </div>
             </div>
@@ -114,7 +115,7 @@ export function SupplierDrawer({
                 className="mt-6 flex w-fit items-center gap-2 rounded-xl bg-red-50 px-4 py-2 text-xs font-bold text-red-500 ring-1 ring-red-100 transition-all hover:bg-red-100 active:scale-[0.98]"
               >
                 <Trash2 className="h-3.5 w-3.5" />
-                <span>{"Delete Supplier"}</span>
+                <span>{t("supplierDrawer.deleteSupplier")}</span>
               </button>
             )}
           </div>

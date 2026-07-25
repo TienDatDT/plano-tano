@@ -29,52 +29,43 @@
     "vitalStatistics": "Vital Statistics",
     "dateRange": "Date Range",
     "today": "Today",
-
     "salesRevenuePerformance": "Sales & Revenue Performance",
     "operationsRetailIntelligence": "Operations & Retail Intelligence",
     "inventoryAssetStockHealth": "Inventory Asset & Stock Health",
-
     "performanceInsights": "Performance Insights",
     "rapidOperations": "Rapid Operations",
-
     "ordersOverTime": "Orders over time",
     "ordersOverTimeDescription": "Monitor orders volume & cash flow revenue",
-
     "stockTrend": "Stock Trend",
     "stockTrendDescription": "Inventory health ratio inside store departments",
-
     "inventoryTurnoverUnit": "x",
-
     "na": "N/A",
-
     "healthy": "Healthy",
     "warning": "Warning",
     "critical": "Critical",
-
     "healthyThreshold": "Healthy (≥ 80%)",
     "warningThreshold": "Warning (65% - 80%)",
     "criticalThreshold": "Critical (< 65%)"
   },
-   "common": {
+  "common": {
     "noProducts": "No Products",
-
     "daily": "Daily",
     "weekly": "Weekly",
     "monthly": "Monthly",
-
     "today": "Today",
-
     "loading": "Loading...",
     "empty": "No Data",
-
     "yes": "Yes",
     "no": "No",
-
     "all": "All",
-
     "unknown": "Unknown",
-
-    "notAvailable": "N/A"
+    "notAvailable": "N/A",
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "results": "results",
+    "previous": "Previous",
+    "next": "Next"
   },
   "salesRevenue": {
     "title": "Sales & Revenue Performance",
@@ -136,15 +127,13 @@
   "products": {
     "title": "Products",
     "subtitle": "Manage your products and performance overview",
-
     "totalProducts": "Total Products",
     "totalStock": "Total Stock",
-
     "searchPlaceholder": "Search products...",
-
     "addProduct": "Add Product",
     "filter": "Filter",
-
+    "newProduct": "New Product",
+    "editProduct": "Edit Product",
     "table": {
       "productName": "Product Name",
       "category": "Category",
@@ -153,20 +142,93 @@
       "status": "Status",
       "actions": "Actions"
     },
-
     "manageSkus": "Manage SKUs",
-
     "empty": {
       "title": "No Products",
       "description": "Add your first product to get started."
     }
   },
-
   "productStatus": {
     "active": "Active",
     "inactive": "Inactive",
     "draft": "Draft",
     "archived": "Archived"
+  },
+  "supplier": {
+    "bulkActionBar": {
+      "selected": "selected",
+      "clear": "Clear",
+      "deleteSelected": "Delete Selected",
+      "supplier": "Supplier",
+      "supplierPlural": "Suppliers"
+    },
+    "supplierDrawer": {
+      "newTitle": "New Supplier",
+      "editTitle": "Edit Supplier",
+      "newDescription": "Add a new source partner to your directory",
+      "editDescription": "Modify existing supplier details",
+      "closePanel": "Close panel",
+      "deleteSupplier": "Delete Supplier",
+      "aria": {
+        "new": "New supplier",
+        "edit": "Edit supplier"
+      }
+    },
+    "supplierFilters": {
+      "searchPlaceholder": "Search suppliers by name, contact, email...",
+      "status": "Supplier Status",
+      "allStatus": "All Status",
+      "activeOnly": "Active Only",
+      "inactiveOnly": "Inactive Only",
+      "region": "Region (Demo)",
+      "domestic": "Domestic",
+      "international": "International",
+      "activeFilters": "Active Filters:",
+      "search": "Search:",
+      "statusLabel": "Status:",
+      "clearAll": "Clear All"
+    },
+    "supplierForm": {
+      "name": "Supplier Name",
+      "namePlaceholder": "e.g. Aurora Desk Supply",
+      "nameRequired": "Supplier name is required",
+      "primaryContact": "Primary Contact",
+      "contactPlaceholder": "Full name",
+      "email": "Email",
+      "emailPlaceholder": "orders@supplier.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+1 ...",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "quickTip": "Quick Tip",
+      "quickTipDescription": "Keep supplier contacts up-to-date for seamless stock-in and reorder workflows.",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "createSupplier": "Create Supplier"
+    }
+  },
+  "supplierHeader": {
+    "title": "Supplier Management",
+    "subtitle": "Source partners for stock-ins and shelf resets",
+    "totalSuppliers": "Total Suppliers",
+    "addSupplier": "Add Supplier",
+    "searchPlaceholder": "Search suppliers..."
+  },
+  "supplierTable": {
+    "supplierName": "Supplier Name",
+    "contactInfo": "Contact Info",
+    "phone": "Phone",
+    "status": "Status",
+    "created": "Created",
+    "actions": "Actions",
+    "active": "Active",
+    "inactive": "Inactive",
+    "noResults": "No results found",
+    "noResultsDescription": "Your search or filters didn't match any suppliers. Try broadening your criteria.",
+    "resetFilters": "Reset all filters",
+    "editSupplier": "Edit Supplier",
+    "deleteSupplier": "Delete Supplier",
+    "cannotSelect": "Cannot select this supplier (likely has active orders)"
   }
-
 }

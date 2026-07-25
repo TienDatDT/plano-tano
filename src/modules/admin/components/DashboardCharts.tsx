@@ -17,7 +17,7 @@ import {
 import { Card } from "@/shared/components/ui/Card";
 import { formatCurrency, formatCompactNumber } from "@/shared/lib/formatters";
 import { BarChart3, TrendingUp, Info } from "lucide-react";
-import { useTranslation } from "@/shared/lib/i18n/client";
+import { useTranslation } from "react-i18next";
 
 interface DashboardChartsProps {
   data?: {
