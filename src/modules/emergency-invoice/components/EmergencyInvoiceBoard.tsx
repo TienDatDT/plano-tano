@@ -163,10 +163,11 @@ export function EmergencyInvoiceBoard() {
 
   // ── Handlers ──────────────────────────────────────
   const handleCreate = async (data: CreateEmergencyInvoiceInput) => {
-    await emergencyInvoiceApi.createInvoice(data);
+    const res = await emergencyInvoiceApi.createInvoice(data); // ← lấy response
     toast.success('Hóa đơn đã được tạo thành công!');
     setDuplicateSource(null);
     await Promise.all([loadInvoices(1), loadSummary()]);
+    return res.data;
   };
   const handleDuplicate = (invoice: EmergencyInvoice) => {
     setDuplicateSource({
@@ -478,6 +479,7 @@ export function EmergencyInvoiceBoard() {
         onClose={() => { setDuplicateSource(null); setIsCreateOpen(false); }}
         onSuccess={() => { }}
         onSubmit={handleCreate}
+        onPrint={handlePrint}
         initialData={duplicateSource}
       />
 

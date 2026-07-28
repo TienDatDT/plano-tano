@@ -34,6 +34,7 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
   const [bulkDiscountValue, setBulkDiscountValue] = useState<number>(0);
   const [discountMode, setDiscountMode] = useState<'ITEM' | 'INVOICE'>('ITEM');
   const [invoiceDiscountPercent, setInvoiceDiscountPercent] = useState(0);
+  const [showCloseConfirm, setShowCloseConfirm] = useState(false);
 
   const [calcOpen, setCalcOpen] = useState<{ index: number; rect: DOMRect } | null>(null);
   const bodyScrollRef = useRef<HTMLDivElement>(null);
@@ -89,7 +90,7 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
     watch,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<
     z.input<typeof updateEmergencyInvoiceSchema>,
     any,
@@ -130,8 +131,6 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
   useEffect(() => {
     if (isOpen && invoice) {
       const dateStr = invoice.invoiceDate ?? invoice.createdAt;
-      const formattedDate = new Date(dateStr).toISOString().slice(0, 16);
-
       const nextItems = invoice.items?.map((item) => ({
         productName: item.productName,
         quantity: item.quantity,
@@ -139,7 +138,7 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
         discountPercent: Number((item as { discountPercent?: number }).discountPercent) || 0,
       })) || [{ productName: '', quantity: 1, unitPrice: 0, discountPercent: 0 }];
 
-      reset({ invoiceDate: formattedDate, note: invoice.note || '', items: nextItems });
+      reset({ invoiceDate: toLocalDateTime(dateStr), note: invoice.note || '', items: nextItems });
 
       // Đánh dấu dòng có chiết khấu ngoài preset là "tự điền"
       const customRows: Record<string, boolean> = {};
@@ -160,15 +159,38 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
   useKeyboardShortcut([
     {
       key: 'Enter',
-      ctrl: true,
+      shift: true,
       callback: () =>
         append({ productName: '', quantity: 1, unitPrice: 0, discountPercent: 0 }),
     },
     {
+      key: 'Enter',
+      ctrl: true,
+      callback: () =>
+        handleSubmit(handleFormSubmit)(),
+    },
+    {
       key: 'Escape',
-      callback: () => onClose(),
+      callback: () => handleClose(),
     }
   ]);
+  const toLocalDateTime = (value: string | Date) => {
+    const date = new Date(value);
+
+    const offset = date.getTimezoneOffset();
+
+    const local = new Date(date.getTime() - offset * 60 * 1000);
+
+    return local.toISOString().slice(0, 16);
+  };
+  const handleClose = () => {
+    if (isDirty) {
+      setShowCloseConfirm(true);
+      return;
+    }
+
+    onClose();
+  };
 
   const handleFormSubmit = async (data: UpdateEmergencyInvoiceInput) => {
     if (!invoice) return;
@@ -236,8 +258,48 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      {
+        showCloseConfirm && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
 
+              <h3 className="text-lg font-bold text-neutral-900">
+                Đóng cửa sổ?
+              </h3>
+
+              <p className="mt-2 text-sm text-neutral-600">
+                Bạn đang có dữ liệu chưa lưu.
+                <br />
+                Nếu đóng bây giờ mọi thay đổi sẽ bị mất.
+              </p>
+
+              <div className="mt-6 flex justify-end gap-3">
+
+                <button
+                  type="button"
+                  onClick={() => setShowCloseConfirm(false)}
+                  className="rounded-xl border border-premium-border px-4 py-2 text-sm font-bold"
+                >
+                  Tiếp tục chỉnh sửa
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCloseConfirm(false);
+                    onClose();
+                  }}
+                  className="rounded-xl bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-red-600"
+                >
+                  Đóng
+                </button>
+
+              </div>
+            </div>
+          </div>
+        )
+      }
       {/* Modal */}
       <div className="relative bg-white rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] flex flex-col overflow-hidden">
 
@@ -258,7 +320,7 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="h-8 w-8 shrink-0 flex items-center justify-center rounded-xl text-neutral-400 hover:text-neutral-700 hover:bg-slate-100 transition-all"
           >
             <X className="w-4 h-4" />
@@ -757,7 +819,7 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
               <div className="flex gap-3">
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="flex-1 px-5 py-2.5 rounded-xl border border-premium-border text-xs font-bold text-neutral-600 hover:bg-slate-50 transition-all sm:flex-none"
                 >
                   Huỷ

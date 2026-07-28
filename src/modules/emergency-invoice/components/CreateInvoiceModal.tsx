@@ -5,7 +5,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash2, X, Loader2, FileText, Calculator } from 'lucide-react';
 import { formatCurrency } from '@/shared/lib/formatters';
-import { createEmergencyInvoiceSchema } from '../types/emergency-invoice.types';
+import { createEmergencyInvoiceSchema, EmergencyInvoice } from '../types/emergency-invoice.types';
 import type { CreateEmergencyInvoiceInput } from '../types/emergency-invoice.types';
 import { useKeyboardShortcut } from '@/shared/hooks/useKeyboardShortcut';
 import { z } from 'zod';
@@ -15,7 +15,8 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  onSubmit: (data: CreateEmergencyInvoiceInput) => Promise<void>;
+  onPrint?: (invoice: EmergencyInvoice) => void;
+  onSubmit: (data: CreateEmergencyInvoiceInput) => Promise<EmergencyInvoice>; // không phải Promise<void>
   initialData?: Partial<CreateEmergencyInvoiceInput> | null;
 }
 
@@ -29,7 +30,7 @@ const getLocalDateTimeString = () => {
 };
 const DISCOUNT_PRESETS = [0, 4, 8] as const;
 
-export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit, initialData }: Props) {
+export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onPrint, onSubmit, initialData }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [customDiscountRows, setCustomDiscountRows] = useState<Record<string, boolean>>({});
   const [selectedRows, setSelectedRows] = useState<Record<string, boolean>>({});
@@ -40,6 +41,7 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit, initi
   const bodyScrollRef = useRef<HTMLDivElement>(null);
   const [tape, setTape] = useState<number[]>([]);
   const [current, setCurrent] = useState('');
+  const [showCloseConfirm, setShowCloseConfirm] = useState(false);
 
   const tapeSum = tape.reduce((s, v) => s + v, 0);
   const displayTotal = tapeSum + (Number(current) || 0);
@@ -98,7 +100,7 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit, initi
     watch,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<
     z.input<typeof createEmergencyInvoiceSchema>,
     any,
@@ -205,19 +207,34 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit, initi
     },
     {
       key: 'Escape',
-      callback: () => onClose(),
+      callback: () => handleClose(),
     }
   ]);
 
+  const handleClose = () => {
+    if (isDirty) {
+      setShowCloseConfirm(true);
+      return;
+    }
+
+    onClose();
+  };
   const handleFormSubmit = async (data: CreateEmergencyInvoiceInput) => {
     try {
       setSubmitting(true);
-      await onSubmit({
+      const payload = {
         ...data,
         invoiceDate: data.invoiceDate ? new Date(data.invoiceDate).toISOString() : data.invoiceDate,
-      });
+      };
+      const createdInvoice = await onSubmit(payload);
+
       onSuccess();
       onClose();
+
+      if (onPrint && createdInvoice) {
+        onPrint(createdInvoice)
+      }
+
     } finally {
       setSubmitting(false);
     }
@@ -269,11 +286,54 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit, initi
 
   if (!isOpen) return null;
 
+
   return (
+
+
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      {
+        showCloseConfirm && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
 
+              <h3 className="text-lg font-bold text-neutral-900">
+                Đóng cửa sổ?
+              </h3>
+
+              <p className="mt-2 text-sm text-neutral-600">
+                Bạn đang có dữ liệu chưa lưu.
+                <br />
+                Nếu đóng bây giờ mọi thay đổi sẽ bị mất.
+              </p>
+
+              <div className="mt-6 flex justify-end gap-3">
+
+                <button
+                  type="button"
+                  onClick={() => setShowCloseConfirm(false)}
+                  className="rounded-xl border border-premium-border px-4 py-2 text-sm font-bold"
+                >
+                  Tiếp tục chỉnh sửa
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCloseConfirm(false);
+                    onClose();
+                  }}
+                  className="rounded-xl bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-red-600"
+                >
+                  Đóng
+                </button>
+
+              </div>
+            </div>
+          </div>
+        )
+      }
       {/* Modal container */}
       <div className="relative bg-white rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] flex flex-col overflow-hidden">
 
@@ -287,7 +347,7 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit, initi
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="h-8 w-8 flex items-center justify-center rounded-xl text-neutral-400 hover:text-neutral-700 hover:bg-slate-100 transition-all"
           >
             <X className="w-4 h-4" />
@@ -800,7 +860,7 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit, initi
               <div className="flex gap-3">
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="flex-1 px-5 py-2.5 rounded-xl border border-premium-border text-xs font-bold text-neutral-600 hover:bg-slate-50 transition-all sm:flex-none"
                 >
                   Huỷ
@@ -830,4 +890,6 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onSubmit, initi
       </div>
     </div>
   );
+
+
 }
