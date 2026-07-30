@@ -19,19 +19,26 @@ export const createEmergencyInvoiceItemSchema = z.object({
 
 export const createEmergencyInvoiceSchema = z.object({
   invoiceDate: z.string().optional().refine((val) => {
-    if (!val) return true; // Optional, so empty is fine
+    if (!val) return true;
     const selectedDate = new Date(val);
     const now = new Date();
     return selectedDate <= now;
   }, { message: 'Ngày hóa đơn không được lớn hơn thời điểm hiện tại' })
-  .transform((val) => (val ? new Date(val).toISOString() : val)),
+    .transform((val) => (val ? new Date(val).toISOString() : val)),
   note: z.string().optional(),
+  discountMode: z.enum(['ITEM', 'INVOICE']).default('ITEM'),           // ← thêm
+  invoiceDiscountPercent: z.coerce
+    .number()
+    .min(0, 'Chiết khấu không được nhỏ hơn 0%')
+    .max(100, 'Chiết khấu không được lớn hơn 100%')
+    .default(0),                                                        // ← thêm
   items: z
     .array(createEmergencyInvoiceItemSchema)
     .min(1, 'Hóa đơn phải có ít nhất 1 sản phẩm'),
 });
 
 export const updateEmergencyInvoiceSchema = createEmergencyInvoiceSchema;
+
 
 export type CreateEmergencyInvoiceInput = z.infer<typeof createEmergencyInvoiceSchema>;
 export type UpdateEmergencyInvoiceInput = z.infer<typeof updateEmergencyInvoiceSchema>;
@@ -60,6 +67,8 @@ export interface EmergencyInvoice {
   totalAmount: number;
   createdAt: string;
   updatedAt: string;
+  invoiceDiscountPercent: number;
+  discountMode: 'ITEM' | 'INVOICE';
   items?: EmergencyInvoiceItem[];
 }
 

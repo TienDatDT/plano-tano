@@ -6,8 +6,10 @@ import type {
   FindManyEmergencyInvoicesOptions,
   PaginatedEmergencyInvoices,
   EmergencyInvoiceSummary,
+  EmergencyInvoice,
 } from '../types/emergency-invoice.types';
 import type { EmergencyInvoiceWithItems } from '../repositories/emergency-invoice.repository';
+import { prisma } from '@/shared/lib/prisma';
 
 // ──────────────────────────────────────────
 // Invoice Code Generator
@@ -19,15 +21,42 @@ import type { EmergencyInvoiceWithItems } from '../repositories/emergency-invoic
  */
 async function generateInvoiceCode(): Promise<string> {
   const now = new Date();
+
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const day = String(now.getDate()).padStart(2, '0');
+
   const datePart = `${year}${month}${day}`;
 
-  const todayCount = await emergencyInvoiceRepository.countToday();
-  const sequence = String(todayCount + 1).padStart(4, '0');
+  const lastInvoice =
+    await findLastInvoiceCodeToday(datePart);
 
-  return `INV-${datePart}-${sequence}`;
+  let nextSequence = 1;
+
+  if (lastInvoice?.invoiceCode) {
+    const lastNumber = Number(
+      lastInvoice.invoiceCode.split('-').pop()
+    );
+
+    nextSequence = lastNumber + 1;
+  }
+
+  return `INV-${datePart}-${String(nextSequence).padStart(4, '0')}`;
+}
+async function findLastInvoiceCodeToday(datePart: string) {
+  return prisma.emergencyInvoice.findFirst({
+    where: {
+      invoiceCode: {
+        startsWith: `INV-${datePart}-`,
+      },
+    },
+    orderBy: {
+      invoiceCode: 'desc',
+    },
+    select: {
+      invoiceCode: true,
+    },
+  });
 }
 
 // ──────────────────────────────────────────
@@ -42,7 +71,6 @@ export class EmergencyInvoiceService {
   async createInvoice(raw: unknown): Promise<EmergencyInvoiceWithItems> {
     const data = createEmergencyInvoiceSchema.parse(raw) as CreateEmergencyInvoiceInput;
 
-    // Calculate line totals
     const items = data.items.map((item) => {
       const rawTotal = item.quantity * item.unitPrice;
       const discount = item.discountPercent || 0;
@@ -58,7 +86,6 @@ export class EmergencyInvoiceService {
 
     const totalAmount = items.reduce((sum, item) => sum + item.totalPrice, 0);
     const invoiceCode = await generateInvoiceCode();
-
     const invoiceDate = data.invoiceDate ? new Date(data.invoiceDate) : undefined;
 
     return await emergencyInvoiceRepository.create({
@@ -66,6 +93,8 @@ export class EmergencyInvoiceService {
       invoiceDate,
       note: data.note,
       totalAmount,
+      discountMode: data.discountMode,                     // ← thêm
+      invoiceDiscountPercent: data.invoiceDiscountPercent,  // ← thêm
       items,
     });
   }
@@ -101,6 +130,8 @@ export class EmergencyInvoiceService {
       invoiceDate,
       note: data.note,
       totalAmount,
+      discountMode: data.discountMode,                     // ← thêm
+      invoiceDiscountPercent: data.invoiceDiscountPercent,  // ← thêm
       items,
     });
   }
@@ -147,7 +178,7 @@ export class EmergencyInvoiceService {
     await emergencyInvoiceRepository.delete(id);
   }
 
-   async bulkDeleteInvoices(ids: string[]): Promise<{ deletedCount: number }> {
+  async bulkDeleteInvoices(ids: string[]): Promise<{ deletedCount: number }> {
     if (!Array.isArray(ids) || ids.length === 0) {
       throw new Error('Danh sách ID không hợp lệ');
     }
@@ -173,21 +204,27 @@ export class EmergencyInvoiceService {
 // Serializer: convert Decimal → number for JSON
 // ──────────────────────────────────────────
 
-function serializeInvoice(invoice: EmergencyInvoiceWithItems) {
+function serializeInvoice(
+  invoice: EmergencyInvoiceWithItems
+): EmergencyInvoice {
   return {
     ...invoice,
+
+    invoiceDiscountPercent: Number(invoice.invoiceDiscountPercent ?? 0),
+    totalAmount: Number(invoice.totalAmount),
+
     invoiceDate: invoice.invoiceDate.toISOString(),
     createdAt: invoice.createdAt.toISOString(),
     updatedAt: invoice.updatedAt.toISOString(),
 
-    totalAmount: Number(invoice.totalAmount),
+    discountMode: invoice.discountMode as 'ITEM' | 'INVOICE',
 
-    items: invoice.items.map((item: any) => ({
+    items: invoice.items.map((item) => ({
       ...item,
       createdAt: item.createdAt.toISOString(),
       unitPrice: Number(item.unitPrice),
       totalPrice: Number(item.totalPrice),
-      discountPercent: Number(item.discountPercent || 0),
+      discountPercent: Number(item.discountPercent ?? 0),
     })),
   };
 }

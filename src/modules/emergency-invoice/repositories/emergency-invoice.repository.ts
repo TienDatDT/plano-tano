@@ -123,6 +123,8 @@ export class EmergencyInvoiceRepository {
     invoiceDate?: Date;
     note?: string;
     totalAmount: number;
+    discountMode?: 'ITEM' | 'INVOICE';        // ← thêm
+    invoiceDiscountPercent?: number;           // ← thêm
     items: Array<{
       productName: string;
       quantity: number;
@@ -137,6 +139,8 @@ export class EmergencyInvoiceRepository {
         invoiceDate: data.invoiceDate,
         note: data.note,
         totalAmount: data.totalAmount,
+        discountMode: data.discountMode,                     // ← thêm
+        invoiceDiscountPercent: data.invoiceDiscountPercent,  // ← thêm
         items: {
           create: data.items.map((item) => ({
             productName: item.productName,
@@ -160,6 +164,8 @@ export class EmergencyInvoiceRepository {
       invoiceDate?: Date;
       note?: string;
       totalAmount: number;
+      discountMode?: 'ITEM' | 'INVOICE';        // ← thêm
+      invoiceDiscountPercent?: number;           // ← thêm
       items: Array<{
         productName: string;
         quantity: number;
@@ -170,18 +176,18 @@ export class EmergencyInvoiceRepository {
     },
   ): Promise<EmergencyInvoiceWithItems> {
     return await prisma.$transaction(async (tx) => {
-      // Delete old items
       await tx.emergencyInvoiceItem.deleteMany({
         where: { invoiceId: id },
       });
 
-      // Update invoice and create new items
       return await tx.emergencyInvoice.update({
         where: { id },
         data: {
           invoiceDate: data.invoiceDate,
           note: data.note,
           totalAmount: data.totalAmount,
+          discountMode: data.discountMode,                     // ← thêm
+          invoiceDiscountPercent: data.invoiceDiscountPercent,  // ← thêm
           items: {
             create: data.items.map((item) => ({
               productName: item.productName,

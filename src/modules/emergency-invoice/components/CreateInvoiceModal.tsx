@@ -222,19 +222,26 @@ export function CreateInvoiceModal({ isOpen, onClose, onSuccess, onPrint, onSubm
   const handleFormSubmit = async (data: CreateEmergencyInvoiceInput) => {
     try {
       setSubmitting(true);
+
+      const items = discountMode === 'INVOICE'
+        ? data.items.map((item) => ({
+          ...item,
+          discountPercent: invoiceDiscountPercent,
+        }))
+        : data.items;
+
       const payload = {
         ...data,
+        items,
+        discountMode,                 // ← thêm
+        invoiceDiscountPercent,       // ← thêm
         invoiceDate: data.invoiceDate ? new Date(data.invoiceDate).toISOString() : data.invoiceDate,
       };
-      const createdInvoice = await onSubmit(payload);
 
+      const createdInvoice = await onSubmit(payload);
       onSuccess();
       onClose();
-
-      if (onPrint && createdInvoice) {
-        onPrint(createdInvoice)
-      }
-
+      if (onPrint && createdInvoice) onPrint(createdInvoice);
     } finally {
       setSubmitting(false);
     }

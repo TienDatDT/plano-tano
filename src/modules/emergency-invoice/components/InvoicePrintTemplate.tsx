@@ -15,11 +15,12 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
     hour: '2-digit',
     minute: '2-digit',
   }).format(invoiceDate);
-
   const hasDiscount = invoice.items?.some(
     (item) => Number((item as { discountPercent?: number }).discountPercent) > 0
   );
 
+  const isItemDiscount = invoice.discountMode === 'ITEM';
+  const isInvoiceDiscount = invoice.discountMode === 'INVOICE';
   const subTotal =
     invoice.items?.reduce((sum, item) => {
       return sum + Number(item.quantity) * Number(item.unitPrice);
@@ -27,7 +28,20 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
 
   const totalDiscount = subTotal - Number(invoice.totalAmount);
   const hasInvoiceDiscount = totalDiscount > 0 && !hasDiscount;
+  const showDiscountColumn = isItemDiscount && hasDiscount;
 
+  const invoiceDiscountPercent =
+    subTotal > 0
+      ? Math.round((totalDiscount / subTotal) * 100 * 10) / 10
+      : 0;
+  console.log({
+    subTotal,
+    totalAmount: invoice.totalAmount,
+    totalDiscount,
+    hasDiscount,
+    hasInvoiceDiscount,
+    discountMode: invoice.discountMode,
+  });
   return (
     <div
       ref={ref}
@@ -70,51 +84,61 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
       <table className="w-full text-left border-collapse mb-4">
         <thead>
           <tr className="border-y-2 border-black">
-            <th className="py-1.5 pr-1 w-6 text-center font-bold text-sm text-black">#</th>
-            <th className="py-1.5 px-1 font-bold text-sm text-black">Sản phẩm</th>
-            <th className="py-1.5 px-1 w-8 text-center font-bold text-xs text-black">SL</th>
-            {hasDiscount && (
-              <th className="py-1.5 px-1 w-10 text-center font-bold text-xs text-black">CK</th>
+            <th className="py-1.5 pr-1 w-6 text-center font-bold text-base text-black">#</th>
+            <th className="py-1.5 px-1 font-bold text-base text-black">Sản phẩm</th>
+            <th className="py-1.5 px-1 w-8 text-center font-bold text-base text-black">SL</th>
+            {showDiscountColumn && (
+              <th className="py-1.5 px-1 w-10 text-center font-bold text-base text-black">
+                CK
+              </th>
             )}
-            <th className="py-1.5 pl-1 w-20 text-right font-bold text-sm text-black">T.Tiền</th>
+            <th className="py-1.5 pl-1 w-20 text-right font-bold text-base text-black">T.Tiền</th>
           </tr>
         </thead>
         <tbody>
           {invoice.items?.map((item, index) => {
             const discountPercent =
               Number((item as { discountPercent?: number }).discountPercent) || 0;
+
             const originalPrice = Number(item.quantity) * Number(item.unitPrice);
-            const lineTotal = originalPrice - (originalPrice * discountPercent) / 100;
+
+            // Chỉ giảm từng dòng khi đang dùng chiết khấu theo sản phẩm
+            const lineTotal =
+              showDiscountColumn
+                ? originalPrice - (originalPrice * discountPercent) / 100
+                : originalPrice;
 
             return (
               <tr key={item.id} className="border-b border-gray-700">
-                <td className="py-2 pr-1 text-center text-black text-sm font-medium">{index + 1}</td>
-                <td className="py-2 px-1 text-sm leading-snug">
-                  <div className="font-bold text-black">{item.productName}</div>
+                <td className="py-2.5 pr-1 text-center text-black text-sm font-medium">{index + 1}</td>
+                <td className="py-2.5 px-1 text-sm leading-snug">
+                  <div className="font-bold text-black text-base">{item.productName}</div>
                   {/* Đơn giá xuống dòng cho gọn trên khổ 80mm */}
-                  <div className="text-black text-xs font-medium">
+                  <div className="text-black text-sm font-medium">
                     {new Intl.NumberFormat('vi-VN').format(Number(item.unitPrice))} x {item.quantity}
                   </div>
                 </td>
-                <td className="py-2 px-1 text-center text-sm font-bold text-black">{item.quantity}</td>
-                {hasDiscount && (
-                  <td className="py-2 px-1 text-center">
+                <td className="py-2.5 px-1 text-center text-sm font-bold text-black">{item.quantity}</td>
+                {showDiscountColumn && (
+                  <td className="py-2.5 px-1 text-center">
                     {discountPercent > 0 ? (
-                      <span className="inline-block bg-gray-200 rounded px-1 py-0.5 text-black font-bold text-xs">
+                      <span className="inline-block bg-gray-200 rounded px-1 py-0.5 text-black font-bold text-base">
                         -{discountPercent}%
                       </span>
                     ) : (
-                      <span className="text-black text-xs">—</span>
+                      <span className="text-black text-sm">—</span>
                     )}
                   </td>
                 )}
-                <td className="py-2 pl-1 text-right font-bold text-sm text-black">
-                  {discountPercent > 0 && (
-                    <div className="text-black line-through font-medium text-xs mb-0.5">
+                <td className="py-2.5 pl-1 text-right font-bold text-base text-black">
+                  {showDiscountColumn && discountPercent > 0 && (
+                    <div className="text-black line-through font-medium text-base mb-0.5">
                       {new Intl.NumberFormat('vi-VN').format(originalPrice)}
                     </div>
                   )}
-                  <div>{new Intl.NumberFormat('vi-VN').format(lineTotal)}</div>
+                  <div className="text-base">
+                    {new Intl.NumberFormat('vi-VN').format(lineTotal)}
+                  </div>
                 </td>
               </tr>
             );
@@ -125,7 +149,7 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
       {/* ── TOTALS ── */}
       <div className="flex flex-col items-end mb-4 border-t-2 border-black pt-3 space-y-1.5">
 
-        {(hasDiscount || hasInvoiceDiscount) && (
+        {(isItemDiscount || isInvoiceDiscount) && (
           <div className="flex justify-between w-full">
             <span className="text-black text-sm font-medium">Tạm tính:</span>
             <span className="text-black text-sm font-bold">
@@ -134,7 +158,7 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
           </div>
         )}
 
-        {hasDiscount && totalDiscount > 0 && (
+        {isItemDiscount && totalDiscount > 0 && (
           <div className="flex justify-between w-full">
             <span className="text-black text-sm font-medium">Chiết khấu:</span>
             <span className="text-sm font-bold text-black">
@@ -143,14 +167,10 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
           </div>
         )}
 
-        {hasInvoiceDiscount && (
+        {isInvoiceDiscount && invoiceDiscountPercent > 0 && (
           <div className="flex justify-between w-full">
             <span className="text-black text-sm font-medium">
-              Chiết khấu HĐ
-              {(() => {
-                const pct = Math.round((totalDiscount / subTotal) * 100 * 10) / 10;
-                return pct > 0 ? ` (${pct}%)` : '';
-              })()}:
+              Chiết khấu HĐ ({invoiceDiscountPercent}%):
             </span>
             <span className="text-sm font-bold text-black">
               -{new Intl.NumberFormat('vi-VN').format(totalDiscount)} ₫

@@ -140,7 +140,6 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
 
       reset({ invoiceDate: toLocalDateTime(dateStr), note: invoice.note || '', items: nextItems });
 
-      // Đánh dấu dòng có chiết khấu ngoài preset là "tự điền"
       const customRows: Record<string, boolean> = {};
       nextItems.forEach((item, idx) => {
         if (!(DISCOUNT_PRESETS as readonly number[]).includes(item.discountPercent)) {
@@ -150,8 +149,13 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
       setCustomDiscountRows(customRows);
       setSelectedRows({});
       setBulkDiscountValue(0);
-      setDiscountMode('ITEM');
-      setInvoiceDiscountPercent(0);
+
+      // ← khôi phục đúng mode & % đã lưu, thay vì luôn ép về ITEM
+      setDiscountMode(invoice.discountMode ?? 'ITEM');
+      setInvoiceDiscountPercent(
+        Number(invoice.invoiceDiscountPercent ?? 0)
+      );
+
       setPriceInput({});
     }
   }, [isOpen, invoice, reset]);
@@ -196,11 +200,17 @@ export function EditInvoiceModal({ invoice, isOpen, onClose, onSuccess, onSubmit
     if (!invoice) return;
     try {
       setSubmitting(true);
+
+      const items = discountMode === 'INVOICE'
+        ? data.items.map((item) => ({ ...item, discountPercent: invoiceDiscountPercent }))
+        : data.items;
+
       await onSubmit(invoice.id, {
         ...data,
-        invoiceDate: data.invoiceDate
-          ? new Date(data.invoiceDate).toISOString()
-          : data.invoiceDate,
+        items,
+        discountMode,                 // nếu schema hỗ trợ
+        invoiceDiscountPercent: Number(invoiceDiscountPercent),       // nếu schema hỗ trợ
+        invoiceDate: data.invoiceDate ? new Date(data.invoiceDate).toISOString() : data.invoiceDate,
       });
       onSuccess();
       onClose();
