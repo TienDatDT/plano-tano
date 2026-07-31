@@ -265,7 +265,7 @@ export function EmergencyInvoiceBoard() {
   useKeyboardShortcut([
     {
       key: "n",
-      shift: true,
+      alt: true,
       callback: () => setIsCreateOpen(true)
     }
   ])

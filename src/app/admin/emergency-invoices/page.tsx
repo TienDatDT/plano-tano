@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { EmergencyInvoiceBoard } from '@/modules/emergency-invoice/components/EmergencyInvoiceBoard';
+import { PinnedNotesSection } from '@/modules/pinned-note/components/PinnedNotesSection';
 
 export const metadata: Metadata = {
   title: 'Hóa đơn nhanh | TanaPlano',
@@ -16,6 +17,8 @@ export default function EmergencyInvoicesPage() {
         </p>
       </div>
 
+      <PinnedNotesSection />
+      
       <EmergencyInvoiceBoard />
     </div>
   );
