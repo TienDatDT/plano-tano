@@ -190,8 +190,8 @@ export const InvoicePrintTemplate = React.forwardRef<HTMLDivElement, Props>(({ i
         </div>
 
         {invoice.note && (
-          <div className="w-full mt-1 text-base italic text-black font-medium border-t border-gray-700 pt-2">
-            Ghi chú: {invoice.note}
+          <div className="w-full mt-1 text-lg italic text-black font-medium border-t border-gray-700 pt-2">
+            <strong>Ghi chú:</strong> {invoice.note}
           </div>
         )}
       </div>
