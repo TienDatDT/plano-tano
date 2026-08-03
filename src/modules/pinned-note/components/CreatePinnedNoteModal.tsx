@@ -15,6 +15,7 @@ interface CreatePinnedNoteModalProps {
 
 export function CreatePinnedNoteModal({ isOpen, onClose, onSuccess, initialData }: CreatePinnedNoteModalProps) {
   const [title, setTitle] = useState('');
+  const [tab, setTab] = useState('SGK');
   const [items, setItems] = useState<{ id: string; name: string; price: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -22,6 +23,7 @@ export function CreatePinnedNoteModal({ isOpen, onClose, onSuccess, initialData 
     if (isOpen) {
       if (initialData) {
         setTitle(initialData.title);
+        setTab(initialData.tab || 'SGK');
         setItems(initialData.items.map(i => ({
           id: Math.random().toString(),
           name: i.name,
@@ -29,6 +31,7 @@ export function CreatePinnedNoteModal({ isOpen, onClose, onSuccess, initialData 
         })));
       } else {
         setTitle('');
+        setTab('SGK');
         setItems([{ id: Math.random().toString(), name: '', price: '' }]);
       }
     }
@@ -89,6 +92,7 @@ export function CreatePinnedNoteModal({ isOpen, onClose, onSuccess, initialData 
       setIsSubmitting(true);
       const payload: CreatePinnedNoteInput = {
         title,
+        tab,
         items: validItems.map(i => {
           let parsedPrice = Number(i.price) || 0;
           if (parsedPrice > 0 && parsedPrice <= 999) {
@@ -144,6 +148,19 @@ export function CreatePinnedNoteModal({ isOpen, onClose, onSuccess, initialData 
                 placeholder="Nhập tên..."
                 className="w-full px-4 py-2.5 text-sm bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-premium-primary/20 focus:border-premium-primary transition-all"
               />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-neutral-700 mb-1.5">Nhóm phân loại (Tab)</label>
+              <select
+                value={tab}
+                onChange={(e) => setTab(e.target.value)}
+                className="w-full px-4 py-2.5 text-sm bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-premium-primary/20 focus:border-premium-primary transition-all appearance-none"
+              >
+                <option value="SGK">Sách giáo khoa (SGK)</option>
+                <option value="BAI_TAP">Bộ bài tập</option>
+                <option value="TIENG_ANH">Bộ tiếng anh</option>
+              </select>
             </div>
 
             <div>

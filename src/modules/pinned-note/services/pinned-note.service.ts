@@ -7,9 +7,10 @@ export class PinnedNoteService {
       include: {
         items: true,
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: [
+        { order: 'asc' },
+        { createdAt: 'desc' },
+      ],
     });
     
     // Convert decimal to number for API serialization if needed, 
@@ -45,9 +46,21 @@ export class PinnedNoteService {
   }
 
   async createPinnedNote(data: CreatePinnedNoteInput) {
+    // If order is not provided, find the max order for this tab and add 1
+    let order = data.order;
+    if (order === undefined) {
+      const maxOrderNote = await prisma.pinnedNote.findFirst({
+        where: { tab: data.tab || 'SGK' },
+        orderBy: { order: 'desc' },
+      });
+      order = maxOrderNote ? maxOrderNote.order + 1 : 0;
+    }
+
     const note = await prisma.pinnedNote.create({
       data: {
         title: data.title,
+        tab: data.tab || 'SGK',
+        order,
         items: {
           create: data.items.map(item => ({
             name: item.name,
@@ -83,6 +96,8 @@ export class PinnedNoteService {
       where: { id },
       data: {
         ...(data.title ? { title: data.title } : {}),
+        ...(data.tab ? { tab: data.tab } : {}),
+        ...(data.order !== undefined ? { order: data.order } : {}),
         ...(data.items ? {
           items: {
             create: data.items.map(item => ({
@@ -110,6 +125,18 @@ export class PinnedNoteService {
     await prisma.pinnedNote.delete({
       where: { id },
     });
+    return { success: true };
+  }
+
+  async reorderPinnedNotes(items: { id: string; order: number }[]) {
+    await prisma.$transaction(
+      items.map(item =>
+        prisma.pinnedNote.update({
+          where: { id: item.id },
+          data: { order: item.order },
+        })
+      )
+    );
     return { success: true };
   }
 }

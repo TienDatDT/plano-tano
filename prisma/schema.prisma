@@ -346,6 +346,8 @@ enum ProductStatus {
 model PinnedNote {
   id        String           @id @default(cuid())
   title     String
+  tab       String           @default("SGK")
+  order     Int              @default(0)
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
   items     PinnedNoteItem[]

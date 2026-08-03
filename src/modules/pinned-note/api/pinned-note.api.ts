@@ -44,4 +44,14 @@ export const pinnedNoteApi = {
     if (!res.ok) throw new Error('Không thể xóa mẫu báo giá');
     return res.json();
   },
+
+  reorderPinnedNotes: async (items: { id: string; order: number }[]): Promise<{ success: boolean }> => {
+    const res = await fetch(`${BASE}/reorder`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items }),
+    });
+    if (!res.ok) throw new Error('Không thể lưu thứ tự');
+    return res.json();
+  },
 };
