@@ -66,7 +66,7 @@ export function PinnedNoteCard({ note, onEdit, onDelete }: PinnedNoteCardProps) 
           <p className="text-xs text-neutral-400 text-center py-4">Chưa có mục nào</p>
         ) : (
           <ul className="space-y-1">
-            {note.items.map((item) => {
+            {note.items.map((item, index) => {
               const isCrossed = crossedOutIds.has(item.id);
               return (
                 <li
@@ -76,7 +76,8 @@ export function PinnedNoteCard({ note, onEdit, onDelete }: PinnedNoteCardProps) 
                     ${isCrossed ? 'bg-neutral-50 text-neutral-400' : 'hover:bg-indigo-50/50 text-neutral-700'}
                   `}
                 >
-                  <span className={`font-medium transition-all ${isCrossed ? 'line-through decoration-neutral-400' : ''}`}>
+                  <span className={`font-medium transition-all flex items-center gap-1.5 ${isCrossed ? 'line-through decoration-neutral-400' : ''}`}>
+                    <span className="text-neutral-400 font-normal shrink-0">{index + 1}.</span>
                     {item.name}
                   </span>
                   <span className={`font-semibold transition-all ${isCrossed ? 'line-through decoration-neutral-400' : ''}`}>

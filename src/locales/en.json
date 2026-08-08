@@ -65,7 +65,9 @@
     "of": "of",
     "results": "results",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "salesRevenue": {
     "title": "Sales & Revenue Performance",
@@ -130,6 +132,7 @@
     "totalProducts": "Total Products",
     "totalStock": "Total Stock",
     "searchPlaceholder": "Search products...",
+    "descriptPlaceholder": "Tell us more about this product...",
     "addProduct": "Add Product",
     "filter": "Filter",
     "newProduct": "New Product",
@@ -230,5 +233,27 @@
     "editSupplier": "Edit Supplier",
     "deleteSupplier": "Delete Supplier",
     "cannotSelect": "Cannot select this supplier (likely has active orders)"
+  },
+  "categories": {
+    "title": "Category Management",
+    "subtitle": "Organize your stationery collection into meaningful groups",
+    "totalCategories": "Total Categories",
+    "addCategory": "Add New Category",
+    "error": "Failed to load categories",
+    "deleteToast": "Are you sure you want to delete this category?",
+    "createToast": "Category created successfully",
+    "editToast": "Category updated successfully",
+    "editCategory":"Edit Category",
+    "editSubtitle":"Modify existing category details",
+    "addSubtitle":"Add a new grouping for inventory",
+    "deleteCategory":"Delete Category",
+    "table": {
+      "name": "Name",
+      "description": "Description",
+      "productCount": "Product Count",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "actions": "Actions"
+    }
   }
 }

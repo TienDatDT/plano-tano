@@ -65,7 +65,9 @@
     "of": "trên tổng",
     "results": "kết quả",
     "previous": "Trước",
-    "next": "Tiếp"
+    "next": "Tiếp",
+    "cancel": "Hủy",
+    "save": "Lưu"
   },
   "salesRevenue": {
     "title": "Hiệu suất Bán hàng & Doanh thu",
@@ -130,6 +132,7 @@
     "totalProducts": "Tổng sản phẩm",
     "totalStock": "Tổng tồn kho",
     "searchPlaceholder": "Tìm kiếm sản phẩm...",
+    "descriptPlaceholder": "Mô tả về sản phẩm...",
     "addProduct": "Thêm sản phẩm",
     "filter": "Bộ lọc",
     "newProduct": "Thêm sản phẩm",
@@ -230,6 +233,26 @@
       "editSupplier": "Chỉnh sửa nhà cung cấp",
       "deleteSupplier": "Xóa nhà cung cấp",
       "cannotSelect": "Không thể chọn nhà cung cấp này (có thể đang có đơn hàng đang hoạt động)"
+    }
+  },
+  "categories":{
+    "title": "Quản lý danh mục",
+    "subtitle": "Tổ chức bộ sưu tập văn phòng phẩm của bạn thành các nhóm có ý nghĩa",
+    "totalCategories": "Tổng danh mục",
+    "addCategory": "Thêm danh mục mới",
+    "error": "Thất bại khi tải danh mục",
+    "deleteToast": "Bạn muốn xóa danh mục này?",
+    "editCategory":"Chỉnh sửa danh mục",
+    "editSubtitle":"Điều chỉnh chi tiết danh mục đã tồn tại",
+    "addSubtitle":"Thêm một nhóm danh mục mới",
+    "deleteCategory":"Xóa danh mục",
+    "table":{
+      "name":"Tên danh mục",
+      "description":"Mô tả",
+      "productCount":"Số lượng sản phẩm",
+      "createdAt":"Ngày tạo",
+      "updatedAt":"Ngày cập nhật",
+      "actions":"Thao tác"
     }
   }
 }

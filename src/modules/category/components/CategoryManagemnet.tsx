@@ -9,6 +9,7 @@ import { CategoryDrawer } from "./CategoryDrawer";
 import { CategoryFilterBar } from "./CategoryFilterBar";
 
 import { categoryApi } from "../api/category.api";
+import { useTranslation } from "react-i18next";
 
 interface Category {
   id: string;
@@ -23,6 +24,7 @@ export function CategoryManagement() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const {t}= useTranslation();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -87,7 +89,7 @@ export function CategoryManagement() {
 
   const handleDelete = async (id: string) => {
     toast(
-      "Are you sure you want to delete this category?",
+      t("categories.deleteToast"),
       {
         action: {
           label: "Delete",

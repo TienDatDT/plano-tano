@@ -33,7 +33,7 @@ export function ProductFormDrawer({
   saving,
   onSubmit,
 }: ProductFormDrawerProps) {
-    const {t} = useTranslation();
+  const { t } = useTranslation();
   return (
     <Drawer isOpen={isOpen} onClose={onClose} title={title} description={description}>
       <form onSubmit={onSubmit} className="flex flex-col gap-6">
@@ -46,7 +46,7 @@ export function ProductFormDrawer({
         <div className="space-y-4">
           <div className="space-y-1.5">
             <label htmlFor="pf-name" className="text-xs font-bold uppercase tracking-widest text-premium-muted">
-              {"Product Name"}
+              {t("products.table.productName")}
             </label>
             <input
               id="pf-name"
@@ -60,20 +60,20 @@ export function ProductFormDrawer({
           </div>
           <div className="space-y-1.5">
             <label htmlFor="pf-desc" className="text-xs font-bold uppercase tracking-widest text-premium-muted">
-              {"Description"}
+              {t("products.description")}
             </label>
             <textarea
               id="pf-desc"
               rows={4}
               value={form.description}
               onChange={(e) => setForm((f: any) => ({ ...f, description: e.target.value }))}
-              placeholder={"Tell us more about this product..."}
+              placeholder={t("products.descriptPlaceholder")}
               className="w-full resize-none rounded-xl border border-premium-border bg-premium-bg/30 px-4 py-3 text-sm outline-none transition-all focus:border-premium-primary/50 focus:bg-white focus:ring-4 focus:ring-premium-primary/5"
             />
           </div>
           <div className="space-y-1.5">
             <label htmlFor="pf-cat" className="text-xs font-bold uppercase tracking-widest text-premium-muted">
-              {"Category"}
+              {t("products.table.category")}
             </label>
             <select
               id="pf-cat"
@@ -97,14 +97,14 @@ export function ProductFormDrawer({
             onClick={onClose}
             className="flex-1 rounded-xl border border-premium-border py-3 text-sm font-bold text-premium-muted hover:bg-premium-bg transition-colors"
           >
-            {"Cancel"}
+            {t("common.cancel")}
           </button>
           <button
             type="submit"
             disabled={saving}
             className="flex-[2] rounded-xl bg-premium-primary py-3 text-sm font-bold text-white shadow-soft hover:opacity-95 transition-all active:scale-[0.98] disabled:opacity-50"
           >
-            {saving ? "common.processing" : title.includes("New") ? "Add Product" : "Save"}
+            {saving ? "common.processing" : title.includes("New") ? t("products.addProduct") : t("common.save")}
           </button>
         </div>
       </form>

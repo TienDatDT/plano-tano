@@ -32,14 +32,14 @@ export function CategoryForm({
       description: "",
     },
   });
-    const handleFormSubmit = async (data: any) => {
-      await onSubmit(data);
+  const handleFormSubmit = async (data: any) => {
+    await onSubmit(data);
 
-      reset({
-        name: "",
-        description: ""
-      })
-    }
+    reset({
+      name: "",
+      description: ""
+    })
+  }
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="flex h-full flex-col">
@@ -58,8 +58,8 @@ export function CategoryForm({
               {...register("name", { required: "Name is required" })}
               placeholder={"e.g. Fine Liners & Inks"}
               className={`w-full rounded-xl bg-premium-bg/50 px-4 py-3 text-sm font-medium transition-all focus:bg-white focus:outline-none focus:ring-2 ${errors.name
-                  ? "border-red-300 bg-red-50 ring-red-200"
-                  : "border-premium-border ring-premium-primary/20"
+                ? "border-red-300 bg-red-50 ring-red-200"
+                : "border-premium-border ring-premium-primary/20"
                 } border`}
             />
             {errors.name && (

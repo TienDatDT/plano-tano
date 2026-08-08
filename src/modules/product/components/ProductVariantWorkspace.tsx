@@ -12,11 +12,12 @@ import { ProductFormDrawer } from "./workspace/ProductFormDrawer";
 import { VariantFormDrawer } from "./workspace/VariantFormDrawer";
 import { useNotify } from "@/shared/hooks/use-notify";
 import { useConfirm } from "@/shared/hooks/use-confirm";
+import { useTranslation } from "react-i18next";
 
 type DrawerKind = "none" | "product-create" | "product-edit" | "variant-create" | "variant-edit";
 
 export function ProductVariantWorkspace() {
-  // const {t, locale} = useTranslation();
+  const {t } = useTranslation();
   const notify = useNotify();
   const confirm = useConfirm();
 

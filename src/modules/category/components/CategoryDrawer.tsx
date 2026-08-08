@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { X, Trash2, Info } from "lucide-react";
 import { CategoryForm } from "../components/CategoryForm";
 import { useKeyboardShortcut } from "@/shared/hooks/useKeyboardShortcut";
+import { t } from "i18next";
 
 interface Category {
   id: string;
@@ -80,10 +81,10 @@ export function CategoryDrawer({
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-bold text-neutral-900">
-                  {category ? "Edit Category" : "New Category"}
+                  {category ? t("categories.editCategory") : t("categories.addCategory")}
                 </h2>
                 <p className="text-sm font-medium text-premium-muted">
-                  {category ? "Modify existing category details" : "Add a new grouping for inventory"}
+                  {category ? t("categories.editSubtitle") : t("categories.addSubtitle")}
                 </p>
               </div>
             </div>
@@ -94,7 +95,7 @@ export function CategoryDrawer({
                 className="mt-6 flex w-fit items-center gap-2 rounded-xl bg-red-50 px-4 py-2 text-xs font-bold text-red-500 ring-1 ring-red-100 transition-all hover:bg-red-100 active:scale-[0.98]"
               >
                 <Trash2 className="h-3.5 w-3.5" />
-                <span>{"Delete Category"}</span>
+                <span>{t("categories.deleteCategory")}</span>
               </button>
             )}
           </div>

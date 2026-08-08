@@ -14,7 +14,7 @@ type ApiProduct = {
 
 const priceFmt = new Intl.NumberFormat(undefined, {
   style: "currency",
-  currency: "USD",
+  currency: "VND",
   maximumFractionDigits: 2,
 });
 

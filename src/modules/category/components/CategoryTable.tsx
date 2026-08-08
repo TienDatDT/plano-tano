@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useTransition } from "react";
 import { 
   MoreVertical, 
   Edit2, 
@@ -10,6 +10,8 @@ import {
   ChevronRight,
   Tags
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
 
 interface Category {
   id: string;
@@ -27,6 +29,7 @@ interface CategoryTableProps {
 }
 
 export function CategoryTable({ categories, onEdit, onDelete }: CategoryTableProps) {
+  const { t } = useTranslation();
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -41,12 +44,12 @@ export function CategoryTable({ categories, onEdit, onDelete }: CategoryTablePro
         <table className="w-full border-collapse text-left text-sm">
           <thead>
             <tr className="border-b border-premium-border bg-premium-bg/50">
-              <th className="px-6 py-4 font-bold text-premium-muted">{"NAME"}</th>
-              <th className="px-6 py-4 font-bold text-premium-muted">{"DESCRIPTION"}</th>
-              <th className="px-6 py-4 font-bold text-premium-muted text-center">{"PRODUCTS"}</th>
-              <th className="px-6 py-4 font-bold text-premium-muted">{"CREATED"}</th>
-              <th className="px-6 py-4 font-bold text-premium-muted">{"UPDATED"}</th>
-              <th className="px-6 py-4 font-bold text-premium-muted text-right pr-8">{"ACTIONS"}</th>
+              <th className="px-6 py-4 font-bold text-premium-muted uppercase">{t("categories.table.name")}</th>
+              <th className="px-6 py-4 font-bold text-premium-muted uppercase">{t("categories.table.description")}</th>
+              <th className="px-6 py-4 font-bold text-premium-muted uppercase text-center">{t("categories.table.productCount")}</th>
+              <th className="px-6 py-4 font-bold text-premium-muted uppercase">{t("categories.table.createdAt")}</th>
+              <th className="px-6 py-4 font-bold text-premium-muted uppercase">{t("categories.table.updatedAt")}</th>
+              <th className="px-6 py-4 font-bold text-premium-muted uppercase text-right pr-8">{t("categories.table.actions")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-premium-border">
